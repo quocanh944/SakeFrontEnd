@@ -55,11 +55,11 @@ const TABLE_ROWS = [
   },
 ];
 
-const List = () => {
+const List = (props) => {
   return (
     <div className="w-full bg-white shadow-lg h-auto flex flex-col rounded-2xl p-8 gap-8">
       <div className="flex justify-between ">
-        <div className="font-medium text-xl">Lastest Orders</div>
+        <div className="font-medium text-xl">{props.header}</div>
         <div className="w-[63px] flex items-center">
           <span className="flex items-center text-[14px] font-semibold font-sans ">
             More
@@ -116,3 +116,27 @@ const List = () => {
 };
 
 export default List;
+
+export const ProductList = () => {
+  <div className="w-full bg-white shadow-lg h-auto flex flex-col rounded-2xl p-8 gap-8">
+    <div className="flex justify-between ">
+      <div className="font-medium text-xl">Products</div>
+      <div className="w-[63px] flex items-center">
+        <span className="flex items-center text-[14px] font-semibold font-sans ">
+          More
+          <BsArrowRightShort size={20} className="text-gray-400" />
+        </span>
+      </div>
+    </div>
+    <table className="w-full">
+      <thead>
+        <tr className="bg-stone-100 text-gray-400 text-left h-[64px] ">
+          {TABLE_HEAD.map((head) => (
+            <td className=" h-[64px] p-[25px]">{head}</td>
+          ))}
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>;
+};

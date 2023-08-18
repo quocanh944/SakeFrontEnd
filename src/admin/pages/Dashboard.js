@@ -41,10 +41,10 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="mt-[50px]">
-        <ListBestSeller />
+        <List header="Best Sellers" />
       </div>
       <div className="mt-[50px]">
-        <List />
+        <List header="Orders Recent" />
       </div>
     </div>
   );
