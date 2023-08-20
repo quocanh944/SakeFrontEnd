@@ -1,9 +1,6 @@
 import React from "react";
-import { ProductList } from "../components/List";
 import ButtonCustom from "../components/ButtonCustom";
-import ProductForm from "../form/ProductForm";
-
-const Products = () => {
+const Brands = () => {
   const background =
     "bg-slate-300 text-gray-600 border border-gray-400 shadow-lg";
   return (
@@ -17,10 +14,9 @@ const Products = () => {
         <ButtonCustom util="Film List" styles={background} link="films" />
         <ButtonCustom util="Brand List" styles={background} link="brands" />
       </div>
-      <ProductList />
-      {/* <ProductForm /> */}
+      Brand List
     </div>
   );
 };
 
-export default Products;
+export default Brands;

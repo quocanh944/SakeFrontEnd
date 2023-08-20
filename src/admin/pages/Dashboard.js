@@ -5,6 +5,7 @@ import ListBestSeller from "../components/ListBestSeller";
 import BarStats from "../components/BarStats";
 import { useState } from "react";
 import { UserData } from "../../utils/UserData.js";
+import GridStats from "../components/GridStats";
 
 const Dashboard = () => {
   const [userData, setUserData] = useState({
@@ -13,32 +14,26 @@ const Dashboard = () => {
       {
         labels: "Users Gained",
         data: UserData.map((data) => data.userGain),
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+      },
+      {
+        labels: "Users Lost",
+        data: UserData.map((data) => data.userLost),
       },
     ],
   });
   return (
     <div>
       <div className="flex justify-between">
-        <div className="flex">
-          <Box name="Renevue" amount="$7,825" />
-        </div>
-        <div className="flex">
-          <Box name="Orders" amount="920" />
-        </div>
-        <div className="flex">
-          <Box name="Visitors" amount="15.5K" />
-        </div>
-        <div className="flex">
-          <Box name="Conversion" amount="28%" />
-        </div>
+        <GridStats />
       </div>
       <div className="mt-[50px] flex justify-between">
         <div className="p-[36px] w-[70%] bg-white bg-opacity-30 rounded-lg shadow-lg">
           <BarStats chartData={userData} />
         </div>
-        <div className="">
+        {/* <div className="">
           <BoxSpecial name="cart" />
-        </div>
+        </div> */}
       </div>
       <div className="mt-[50px]">
         <List header="Best Sellers" />
