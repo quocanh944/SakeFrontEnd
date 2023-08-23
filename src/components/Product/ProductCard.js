@@ -17,7 +17,7 @@ export default function ProductCard({id, name, price, discounted}) {
         </div>
 
         <div className='mb-3'>
-          <ProductPrice price="$99" discounted="12"/>
+          <ProductPrice originalPrice="$99" discountedPrice="$87" discount="12"/>
         </div>
       </div>
     </Link>
