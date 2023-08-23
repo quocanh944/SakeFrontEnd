@@ -18,15 +18,15 @@ export default function ShopMain() {
                     <div className='mb-5'>
                         <ul className='flex flex-col gap-[10px]'>
                             <li className='flex gap-3 max-w-[190px] text-[13px] leading-[17px] tracking-[-0.4px] items-center'>
-                                <input type='checkbox' className='w-5 h-5 accent-primary mr-3' />
+                                <input type='checkbox' className='w-5 h-5 accent-primary mr-3 cursor-pointer' />
                                 <span>Jackets</span>
                             </li>
                             <li className='flex gap-3 max-w-[190px] text-[13px] leading-[17px] tracking-[-0.4px] items-center'>
-                                <input type='checkbox' className='w-5 h-5 accent-primary mr-3' />
+                                <input type='checkbox' className='w-5 h-5 accent-primary mr-3 cursor-pointer' />
                                 <span>Fleece</span>
                             </li>
                             <li className='flex gap-3 max-w-[190px] text-[13px] leading-[17px] tracking-[-0.4px] items-center'>
-                                <input type='checkbox' className='w-5 h-5 accent-primary mr-3' />
+                                <input type='checkbox' className='w-5 h-5 accent-primary mr-3 cursor-pointer' />
                                 <span>Sweatshirts & Hoodies</span>
                             </li>
 
