@@ -1,9 +1,13 @@
 import React from "react";
+import Avatar from "../components/Avatar";
 
 const ProductForm = () => {
   return (
     <div>
-      <form className="w-full bg-white rounded p-8">
+      <form action="" method="post" className="w-full bg-white rounded p-8">
+        <div className="mb-[20px] ">
+          <Avatar />
+        </div>
         <div className="flex justify-between">
           <div className="flex flex-col gap-8 w-[48%]">
             <div className="border-b-[2px] ">
@@ -24,20 +28,26 @@ const ProductForm = () => {
           </div>
           <div className="flex flex-col justify-between w-[48%]">
             <div className="border-b-[2px] ">
-              <input
-                type="text"
+              <select
                 className=" appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:ring-0 "
-                placeholder="Film"
                 name="film_product"
-              ></input>
+              >
+                <option selected>Film</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+              </select>
             </div>
             <div className="border-b-[2px] ">
-              <input
-                type="text"
+              <select
                 className=" appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:ring-0 "
-                placeholder="Brand"
                 name="brand_product"
-              ></input>
+              >
+                <option selected>Brand</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+              </select>
             </div>
             <div className="border-b-[2px] ">
               <input

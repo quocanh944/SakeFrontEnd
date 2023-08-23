@@ -8,6 +8,7 @@ import { BsArrowRightShort } from "react-icons/bs";
 import { BiTrash } from "react-icons/bi";
 import { CiEdit } from "react-icons/ci";
 import { RxDotsHorizontal } from "react-icons/rx";
+import { AiOutlinePlus } from "react-icons/ai";
 const icons = {
   AiOutlineHome,
   TiGift,
@@ -19,5 +20,6 @@ const icons = {
   BiTrash,
   CiEdit,
   RxDotsHorizontal,
+  AiOutlinePlus,
 };
 export default icons;
