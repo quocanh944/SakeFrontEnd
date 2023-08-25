@@ -1,5 +1,4 @@
 import React from "react";
-import { IoBagHandle } from "react-icons/io5";
 
 const Box = (props) => {
   return (
