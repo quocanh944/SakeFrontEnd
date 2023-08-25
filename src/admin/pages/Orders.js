@@ -1,10 +1,10 @@
 import React from "react";
-import List from "../components/List";
+import { OrderList } from "../components/List";
 
 const Orders = () => {
   return (
     <div>
-      <List />
+      <OrderList />
     </div>
   );
 };

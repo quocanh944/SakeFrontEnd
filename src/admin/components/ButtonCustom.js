@@ -8,7 +8,9 @@ const ButtonCustom = (props) => {
         props.styles
       }
     >
-      <a href={props.link}>{props.util}</a>
+      <a className="h-auto" href={props.link}>
+        {props.util}
+      </a>
     </button>
   );
 };

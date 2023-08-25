@@ -5,8 +5,10 @@ const Box = (props) => {
   return (
     <div className="box w-[280px] h-[108px] bg-white bg-opacity-30  rounded-lg shadow-lg flex ">
       <div className="box__detail flex items-center justify-center p-4">
-        <div className="flex items-center justify-center bg-sky-500 rounded-full h-12 w-12">
-          <IoBagHandle className="text-2xl text-white" />
+        <div
+          className={`flex items-center justify-center ${props.color} rounded-full h-12 w-12`}
+        >
+          {props.icons}
         </div>
         <div className="flex flex-col p-4 ">
           <div className="box__detail__name text-lg text-gray-400 font-semibold">
@@ -14,9 +16,9 @@ const Box = (props) => {
           </div>
           <div className="box__detail__amount font-bold text-2xl ">
             {props.amount}
-            <span className="text-green-300 text-lg ml-2">
+            {/* <span className="text-green-300 text-lg ml-2">
               + {props.update}
-            </span>
+            </span> */}
           </div>
         </div>
       </div>
