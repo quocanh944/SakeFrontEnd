@@ -10,7 +10,7 @@ const AppLayout = () => {
         <Sidebar />
       </div>
       <div className="flex-auto px-[48px] py-[38px] bg-neutral-200 flex flex-col gap-4 overflow-y-auto h-screen">
-        <TopNav name="Dashboard" />
+        <TopNav />
         <Outlet />
       </div>
     </div>

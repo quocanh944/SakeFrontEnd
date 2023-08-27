@@ -11,28 +11,6 @@ import { fetchAllOrders } from "../services/OrderService";
 // import { useState } from "react";
 const { BsArrowRightShort, CiEdit, BiTrash, AiOutlinePlus } = icons;
 
-const List = (props) => {
-  return (
-    <div className="w-full bg-white shadow-lg h-auto flex flex-col rounded-2xl p-8 gap-8">
-      <div className="flex justify-between ">
-        <div className="font-medium text-xl">{props.header}</div>
-        <div className="w-[63px] flex items-center">
-          <span className="flex items-center text-[14px] font-semibold font-sans ">
-            More
-            <BsArrowRightShort size={20} className="text-gray-400" />
-          </span>
-        </div>
-      </div>
-      <table className="w-full">
-        <tr className="bg-stone-100 text-gray-400 text-left h-[64px] "></tr>
-        <tbody className=""></tbody>
-      </table>
-    </div>
-  );
-};
-
-export default List;
-
 export const ProductList = (props) => {
   const [listProduct, setListProduct] = useState([]);
   const [totalpages, setTotalPages] = useState();

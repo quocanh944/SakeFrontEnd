@@ -1,7 +1,8 @@
+import React from "react";
 import Admin from "./admin/routes/Admin";
 
-function App() {
+const App = () => {
   return <Admin />;
-}
+};
 
 export default App;

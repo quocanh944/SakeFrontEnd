@@ -14,3 +14,12 @@ const fetchBestSeller = () => {
 };
 
 export { fetchBestSeller };
+const token = localStorage.getItem("token");
+const createProduct = (product) => {
+  return axios.post(`api/products`, product, {
+    header: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+export { createProduct };

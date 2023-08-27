@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import defaultImg from "../../assets/images.png";
-const Avatar = () => {
+const Avatar = (props) => {
   const inputRef = useRef(null);
 
   const handleImageClick = () => {
@@ -33,7 +33,9 @@ const Avatar = () => {
         type="file"
         ref={inputRef}
         onChange={handlePreviewImage}
+        name={props.name}
         className="hidden"
+        id="image_product"
       />
     </div>
   );
