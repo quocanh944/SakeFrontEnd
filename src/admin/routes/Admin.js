@@ -12,27 +12,22 @@ import Films from "../pages/Films";
 import Login from "../pages/Login";
 
 const Admin = () => {
-  if (window.localStorage.getItem("token") == null) {
-    return (
-      <Routes>
+
+  return (
+    <Routes>
+      <Route path="/" element={<AppLayout />}>
+        <Route index element={<Dashboard />}></Route>
+        <Route path="/order" element={<Orders />}></Route>
+        <Route path="/product" element={<Products />}></Route>
+        <Route path="/customer" element={<Customer />}></Route>
+        <Route path="/create-new-campaign" element={<CampaignForm />}></Route>
+        <Route path="/brands" element={<Brands />}></Route>
+        <Route path="/films" element={<Films />}></Route>
+        <Route path="/add-product" element={<ProductForm />}></Route>
         <Route path="/login" element={<Login />} />
-      </Routes>
-    );
-  } else
-    return (
-      <Routes>
-        <Route path="/" element={<AppLayout />}>
-          <Route index element={<Dashboard />}></Route>
-          <Route path="/order" element={<Orders />}></Route>
-          <Route path="/product" element={<Products />}></Route>
-          <Route path="/customer" element={<Customer />}></Route>
-          <Route path="/create-new-campaign" element={<CampaignForm />}></Route>
-          <Route path="/brands" element={<Brands />}></Route>
-          <Route path="/films" element={<Films />}></Route>
-          <Route path="/add-product" element={<ProductForm />}></Route>
-        </Route>
-      </Routes>
-    );
+      </Route>
+    </Routes>
+  );
 };
 
 export default Admin;
