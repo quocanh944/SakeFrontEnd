@@ -8,6 +8,7 @@ import { useRef } from "react";
 import { fetchAllFilms } from "../services/FilmService";
 import defaultImg from "../../assets/images.png";
 import { fetchAllBrands } from "../services/BrandService";
+import axios from "axios";
 
 const ProductForm = () => {
   const inputRef = useRef(null);
@@ -59,23 +60,28 @@ const ProductForm = () => {
     e.preventDefault();
     const products = {
       name: nameProduct,
-      price: price,
-      quantity: quantity,
-      desciption: description,
-      film: film,
-      brand: brand,
+      price: Number(price),
+      quantity: Number(quantity),
+      description: description,
+      film: Number(film),
+      brand: Number(brand),
     };
     const formData = new FormData();
     formData.append("file", path);
     formData.append("product", JSON.stringify(products));
-    let data = {};
-    formData.forEach((value, key) => {
-      data[key] = value;
-    });
-    // console.log(formData.get("product"));
-    const jsonStringtify = JSON.stringify(data);
+    const jsonStringtify = JSON.stringify(products);
     console.log(jsonStringtify);
-    // console.log(formData.get("file"));
+    const token = localStorage.getItem("token");
+    axios({
+      method: "post",
+      url: "http://localhost:8080/api/products",
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data", "Authorization": "Bearer " + token },
+    }).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    })
   };
   return (
     <div>
