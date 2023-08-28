@@ -200,6 +200,7 @@ export const FilmList = () => {
       setListFilm(res.data);
     }
   };
+
   return (
     <div className="w-[50%] bg-white h-auto shadow-lg flex mx-auto my-0 flex-col rounded-2xl p-8 gap-3 overflow-y-auto">
       <div className="flex justify-between ">

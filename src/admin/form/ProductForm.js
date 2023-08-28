@@ -62,6 +62,7 @@ const ProductForm = () => {
       price: price,
       quantity: quantity,
       desciption: description,
+
       film: film,
       brand: brand,
     };
