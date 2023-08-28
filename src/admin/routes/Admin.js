@@ -11,6 +11,7 @@ import Brands from "../pages/Brands";
 import ProductForm from "../form/ProductForm";
 import Films from "../pages/Films";
 import Login from "../pages/Login";
+import EditProduct from "../form/EditProduct";
 
 const Admin = () => {
   return (
@@ -25,6 +26,7 @@ const Admin = () => {
           <Route path="/brands" element={<Brands />}></Route>
           <Route path="/films" element={<Films />}></Route>
           <Route path="/add-product" element={<ProductForm />}></Route>
+          <Route path="/edit-product/:id" element={<EditProduct />}></Route>
         </Route>
         <Route path="/login" element={<Login />} />
       </Route>

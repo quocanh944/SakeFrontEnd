@@ -3,35 +3,70 @@ import React from "react";
 import { useState } from "react";
 import ButtonCustom from "../components/ButtonCustom";
 import { useEffect } from "react";
-import { createProduct } from "../services/ProductService";
+import {
+  createProduct,
+  getProductById,
+  updateProduct,
+} from "../services/ProductService";
 import { useRef } from "react";
 import { fetchAllFilms } from "../services/FilmService";
 import defaultImg from "../../assets/images.png";
 import { fetchAllBrands } from "../services/BrandService";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
-const ProductForm = () => {
+const EditProduct = () => {
+  const { id } = useParams();
+  //   const [product, setProduct] = useState([]);
+  useEffect(() => {
+    getProduct();
+  }, []);
+  const getProduct = async () => {
+    let res = await getProductById(id);
+    if (res && res.data) {
+      console.log(res);
+      setValues({
+        ...values,
+        name: res.data.name,
+        description: res.data.description,
+        film: res.data.film.name,
+        brand: res.data.brand.name,
+        price: res.data.price,
+        quantity: res.data.quantity,
+        image: res.data.medias[0].url,
+      });
+    }
+  };
+  const [values, setValues] = useState({
+    name: "",
+    description: "",
+    film: "",
+    brand: "",
+    price: "",
+    quantity: "",
+    image: "",
+  });
   const inputRef = useRef(null);
 
   const handleImageClick = () => {
     inputRef.current.click();
   };
-  const [nameProduct, setNameProduct] = useState();
-  const [description, setDescription] = useState();
-  const [price, setPrice] = useState();
-  const [quantity, setQuantity] = useState();
-  const [image, setImage] = useState();
-  const [path, setPath] = useState();
+  //   const [name, setNameProduct] = useState();
+  //   const [description, setDescription] = useState();
+  //   const [price, setPrice] = useState();
+  //   const [quantity, setQuantity] = useState();
+  //   const [image, setImage] = useState();
+  //   const [path, setPath] = useState();
   const [filmList, setFilmList] = useState();
   const [brandList, setBrandList] = useState();
-  const [film, setFilm] = useState();
-  const [brand, setBrand] = useState();
+  //   const [film, setFilm] = useState();
+  //   const [brand, setBrand] = useState();
   useEffect(() => {
     return () => {
-      image && URL.revokeObjectURL(image.preview);
+      values.image && URL.revokeObjectURL(values.image.preview);
     };
-  }, [image]);
+  }, [values.image]);
   useEffect(() => {
     getFilmList();
   }, []);
@@ -53,41 +88,24 @@ const ProductForm = () => {
   const handlePreviewImage = (e) => {
     const file = e.target.files[0];
     file.preview = URL.createObjectURL(file);
-    setImage(file);
+    console.log(file);
+    setValues(...values, { image: file.preview });
+    //  setImage(file);
     // console.log(URL.createObjectURL(file));
-    setPath(file);
+    //  setPath(file);
   };
   const saveProduct = async (e) => {
     e.preventDefault();
-    const products = {
-      name: nameProduct,
-      price: Number(price),
-      quantity: Number(quantity),
-      description: description,
-      film: Number(film),
-      brand: Number(brand),
-    };
     const formData = new FormData();
-    formData.append("file", path);
-    formData.append("product", JSON.stringify(products));
-    const jsonStringtify = JSON.stringify(products);
-    console.log(jsonStringtify);
-    // const token = localStorage.getItem("token");
-    let res = await createProduct(formData);
+    formData.append("file", values.image);
+    formData.append("product", JSON.stringify(values));
+    console.log(formData.get("product"));
+    let res = await updateProduct(id, formData);
     if (res) {
-      console.log(res);
-      setImage("");
-      setNameProduct("");
-      setPrice("");
-      setBrand("");
-      setQuantity("");
-      setDescription("");
-      setFilm("");
-      setFilmList("");
-      setBrandList("");
-      toast.success("Adding product is succeed!");
+      toast.success("Update product succeed!");
+      window.location.href = "/product";
     } else {
-      toast.error("Error!");
+      toast.error("Update Failed");
     }
   };
   return (
@@ -104,14 +122,18 @@ const ProductForm = () => {
             className="w-[250px] h-[220px] m-auto cursor-pointer"
             onClick={handleImageClick}
           >
-            {image ? (
+            {values.image ? (
               <img
-                src={image.preview}
+                src={values.image}
                 alt=""
                 className="rounded w-full h-full"
               />
             ) : (
-              <img src={defaultImg} alt="" className="rounded w-full h-full" />
+              <img
+                src={values.image.preview}
+                alt=""
+                className="rounded w-full h-full"
+              />
             )}
             <input
               type="file"
@@ -130,8 +152,10 @@ const ProductForm = () => {
                 className=" appearance-none bg-transparent border-none w-full text-gray-700 py-1 px-2 focus:ring-0 "
                 placeholder="Name Product"
                 name="name_product"
-                value={nameProduct}
-                onChange={(e) => setNameProduct(e.target.value)}
+                value={values.nameProduct}
+                onChange={(e) =>
+                  setValues({ ...values, nameProduct: e.target.value })
+                }
               ></input>
             </div>
             <div className="">
@@ -139,8 +163,10 @@ const ProductForm = () => {
                 className="w-full rounded-lg h-[250px]"
                 placeholder="Describe about product"
                 name="desc_product"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={values.description}
+                onChange={(e) =>
+                  setValues({ ...values, description: e.target.value })
+                }
               ></textarea>
             </div>
           </div>
@@ -149,7 +175,8 @@ const ProductForm = () => {
               <select
                 className=" appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:ring-0 "
                 name="film_product"
-                onChange={(e) => setFilm(e.target.value)}
+                value={values.film}
+                onChange={(e) => setValues({ ...values, film: e.target.value })}
               >
                 <option value="" disabled selected>
                   Choose Film
@@ -166,7 +193,10 @@ const ProductForm = () => {
               <select
                 className=" appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:ring-0 "
                 name="brand_product"
-                onChange={(e) => setBrand(e.target.value)}
+                value={values.brand}
+                onChange={(e) =>
+                  setValues({ ...values, brand: e.target.value })
+                }
               >
                 <option value="" disabled selected>
                   Choose Brand
@@ -184,8 +214,10 @@ const ProductForm = () => {
                 type="number"
                 className=" appearance-none bg-transparent border-none w-full text-gray-700 py-1 px-2 focus:ring-0 "
                 placeholder="Price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                value={values.price}
+                onChange={(e) =>
+                  setValues({ ...values, price: e.target.value })
+                }
                 name="price_product"
               ></input>
             </div>
@@ -194,8 +226,10 @@ const ProductForm = () => {
                 type="number"
                 className=" appearance-none bg-transparent border-none w-full text-gray-700 py-1 px-2 focus:ring-0 "
                 placeholder="Quantity"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
+                value={values.quantity}
+                onChange={(e) =>
+                  setValues({ ...values, quantity: e.target.value })
+                }
                 name="quantity_product"
               ></input>
             </div>
@@ -212,4 +246,4 @@ const ProductForm = () => {
   );
 };
 
-export default ProductForm;
+export default EditProduct;

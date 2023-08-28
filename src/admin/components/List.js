@@ -8,6 +8,8 @@ import Pagination from "./Pagination";
 import { fetchAllFilms } from "../services/FilmService";
 import { fetchAllBrands } from "../services/BrandService";
 import { fetchAllOrders } from "../services/OrderService";
+import EditProduct from "../form/EditProduct";
+import { Link } from "react-router-dom";
 // import { useState } from "react";
 const { BsArrowRightShort, CiEdit, BiTrash, AiOutlinePlus } = icons;
 
@@ -30,6 +32,11 @@ export const ProductList = (props) => {
       setTotalProducts(res.data.totalElements);
     }
   };
+
+  // const handleEditProduct = (product) => {
+  //   // window.localStorage.setItem("product", JSON.stringify(product));
+  //   // window.location.href = `/edit-product/${product.id}`;
+  // };
   const paginateFront = () => {
     getProducts(currentPage + 1);
     setCurrentPage(currentPage + 1);
@@ -93,12 +100,15 @@ export const ProductList = (props) => {
                   <td className="w-auto text-center">{item.film.name}</td>
                   <td className="w-auto ">{item.description}</td>
                   <td className="w-auto text-center ">
-                    <a href="/#" className="text-blue-600">
+                    <Link
+                      to={`/edit-product/${item.id}`}
+                      className="text-blue-600"
+                    >
                       <CiEdit
                         className="inline-block mr-3 cursor-pointer"
                         size={20}
                       />
-                    </a>
+                    </Link>
                     <a href="/#" className="text-red-500">
                       <BiTrash
                         className="inline-block mr-3 cursor-pointer"

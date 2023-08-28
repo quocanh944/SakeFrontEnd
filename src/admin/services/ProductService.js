@@ -17,10 +17,27 @@ export { fetchBestSeller };
 const token = localStorage.getItem("token");
 const createProduct = (product) => {
   return axios.post(`api/products`, product, {
-    header: {
+    headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "multipart/form-data",
     },
   });
 };
 export { createProduct };
+
+const getProductById = (id) => {
+  return axios.get(`api/products/${id}`);
+};
+
+export { getProductById };
+
+const updateProduct = (id, product) => {
+  return axios.put(`api/products/${id}`, product, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export { updateProduct };
