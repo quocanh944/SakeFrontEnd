@@ -2,9 +2,10 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import { useAuth } from "../components/auth";
-
+import { toast } from "react-toastify";
 import { LoginApi } from "../services/AuthService";
 import { useEffect } from "react";
+import jwtDecode from "jwt-decode";
 const Login = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
@@ -18,19 +19,30 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    let res = await LoginApi(email, password);
-    if (res && res.data && res.data.accessToken) {
-      window.localStorage.setItem("token", res.data.accessToken);
-      navigate("/");
-    } else {
-      if (res && res.data && res.data.httpStatus === 400) {
+    if (!email || !password) {
+      toast.error("Email/Password is required");
+    }
+    try {
+      let res = await LoginApi(email, password);
+      let jwt_decode = jwtDecode(res.data.accessToken);
+      const author = jwt_decode.role[0].authority;
+      if (author === "ADMIN") {
+        window.localStorage.setItem("token", res.data.accessToken);
+        navigate("/");
+        toast.success("Login success");
+      } else {
+        toast.warning("Account is not Admin");
+      }
+    } catch (error) {
+      if (error.response.status === 500) {
+        toast.warning("Email/Password is wrong");
       }
     }
   };
   return (
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
       <div className="w-full p-6 m-auto bg-white rounded-md shadow-xl shadow-rose-600/40 ring ring-2 ring-purple-600 lg:max-w-xl">
-        <h1 className="text-3xl font-semibold text-center text-purple-700 underline uppercase decoration-wavy">
+        <h1 className="text-3xl font-semibold text-center text-purple-700 uppercase decoration-wavy">
           Sign in
         </h1>
         <form className="mt-6">
@@ -74,12 +86,6 @@ const Login = () => {
             </button>
           </div>
         </form>
-
-        <p className="mt-8 text-xs font-light text-center text-gray-700">
-          {" "}
-          Don't have an account?{" "}
-          <a className="font-medium text-purple-600 hover:underline">Sign up</a>
-        </p>
       </div>
     </div>
   );

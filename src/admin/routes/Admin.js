@@ -13,7 +13,6 @@ import Films from "../pages/Films";
 import Login from "../pages/Login";
 
 const Admin = () => {
-
   return (
     <Routes>
       <Route path="/" element={<AuthenLayout />}>
