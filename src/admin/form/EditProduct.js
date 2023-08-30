@@ -25,13 +25,13 @@ const EditProduct = () => {
   const getProduct = async () => {
     let res = await getProductById(id);
     if (res && res.data) {
-      console.log(res);
+      // console.log(res);
       setValues({
         ...values,
         name: res.data.name,
         description: res.data.description,
-        film: res.data.film.name,
-        brand: res.data.brand.name,
+        film: res.data.film.id,
+        brand: res.data.brand.id,
         price: res.data.price,
         quantity: res.data.quantity,
         image: res.data.medias[0].url,
@@ -56,7 +56,7 @@ const EditProduct = () => {
   //   const [description, setDescription] = useState();
   //   const [price, setPrice] = useState();
   //   const [quantity, setQuantity] = useState();
-  //   const [image, setImage] = useState();
+  const [image, setImage] = useState("");
   //   const [path, setPath] = useState();
   const [filmList, setFilmList] = useState();
   const [brandList, setBrandList] = useState();
@@ -64,9 +64,9 @@ const EditProduct = () => {
   //   const [brand, setBrand] = useState();
   useEffect(() => {
     return () => {
-      values.image && URL.revokeObjectURL(values.image.preview);
+      image && URL.revokeObjectURL(image.preview);
     };
-  }, [values.image]);
+  }, [image]);
   useEffect(() => {
     getFilmList();
   }, []);
@@ -88,18 +88,31 @@ const EditProduct = () => {
   const handlePreviewImage = (e) => {
     const file = e.target.files[0];
     file.preview = URL.createObjectURL(file);
-    console.log(file);
-    setValues(...values, { image: file.preview });
+    // console.log(file);
+    setImage(file);
+    // values.image = file;
+    // console.log(values);
+    // console.log(values.image);
+
     //  setImage(file);
     // console.log(URL.createObjectURL(file));
     //  setPath(file);
   };
   const saveProduct = async (e) => {
     e.preventDefault();
+    const products = {
+      name: values.name,
+      price: Number(values.price),
+      quantity: Number(values.quantity),
+      description: values.description,
+      film: Number(values.film),
+      brand: Number(values.brand),
+    };
     const formData = new FormData();
-    formData.append("file", values.image);
-    formData.append("product", JSON.stringify(values));
-    console.log(formData.get("product"));
+    console.log(products);
+    formData.append("file", image);
+    formData.append("product", JSON.stringify(products));
+    console.log(formData.get("file"));
     let res = await updateProduct(id, formData);
     if (res) {
       toast.success("Update product succeed!");
@@ -122,19 +135,20 @@ const EditProduct = () => {
             className="w-[250px] h-[220px] m-auto cursor-pointer"
             onClick={handleImageClick}
           >
-            {values.image ? (
+            {image ? (
               <img
-                src={values.image}
+                src={image.preview}
                 alt=""
                 className="rounded w-full h-full"
               />
             ) : (
               <img
-                src={values.image.preview}
+                src={values.image}
                 alt=""
                 className="rounded w-full h-full"
               />
             )}
+            {/* <img src={values.image} alt="" className="rounded w-full h-full" /> */}
             <input
               type="file"
               ref={inputRef}
@@ -152,10 +166,8 @@ const EditProduct = () => {
                 className=" appearance-none bg-transparent border-none w-full text-gray-700 py-1 px-2 focus:ring-0 "
                 placeholder="Name Product"
                 name="name_product"
-                value={values.nameProduct}
-                onChange={(e) =>
-                  setValues({ ...values, nameProduct: e.target.value })
-                }
+                value={values.name}
+                onChange={(e) => setValues({ ...values, name: e.target.value })}
               ></input>
             </div>
             <div className="">

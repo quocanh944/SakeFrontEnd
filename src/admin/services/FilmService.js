@@ -3,8 +3,35 @@ const fetchAllFilms = () => {
   return axios.get("api/films");
 };
 export { fetchAllFilms };
-
+const token = localStorage.getItem("token");
 const addFilm = (name) => {
-  return axios.post(`api/films`, { name });
+  return axios.post(
+    `api/films`,
+    { name },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
 };
 export { addFilm };
+
+const updateFilm = (id) => {
+  return axios.put(`api/films/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+export { updateFilm };
+
+const deleteFilm = (id) => {
+  return axios.delete(`api/films/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+export { deleteFilm };

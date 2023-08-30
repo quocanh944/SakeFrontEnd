@@ -1,15 +1,22 @@
 import React from "react";
 import icons from "../../utils/icons";
 import { useEffect } from "react";
-import { fetchAllProducts, fetchBestSeller } from "../services/ProductService";
+import {
+  deleteProduct,
+  fetchAllProducts,
+  fetchBestSeller,
+} from "../services/ProductService";
 import { useState } from "react";
 import ButtonCustom from "./ButtonCustom";
 import Pagination from "./Pagination";
-import { fetchAllFilms } from "../services/FilmService";
-import { fetchAllBrands } from "../services/BrandService";
+import { deleteFilm, fetchAllFilms } from "../services/FilmService";
+import { deleteBrand, fetchAllBrands } from "../services/BrandService";
 import { fetchAllOrders } from "../services/OrderService";
 import EditProduct from "../form/EditProduct";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { fetchAllUsers } from "../services/UserService";
+import Modal from "./Modal";
 // import { useState } from "react";
 const { BsArrowRightShort, CiEdit, BiTrash, AiOutlinePlus } = icons;
 
@@ -33,10 +40,15 @@ export const ProductList = (props) => {
     }
   };
 
-  // const handleEditProduct = (product) => {
-  //   // window.localStorage.setItem("product", JSON.stringify(product));
-  //   // window.location.href = `/edit-product/${product.id}`;
-  // };
+  const handleDelete = async (id) => {
+    let res = await deleteProduct(id);
+    if (res) {
+      window.location.reload();
+      toast.success(`Delete product #${id} is succeed!`);
+    } else {
+      toast.error("Delete failed!");
+    }
+  };
   const paginateFront = () => {
     getProducts(currentPage + 1);
     setCurrentPage(currentPage + 1);
@@ -109,7 +121,10 @@ export const ProductList = (props) => {
                         size={20}
                       />
                     </Link>
-                    <a href="/#" className="text-red-500">
+                    <a
+                      onClick={() => handleDelete(item.id)}
+                      className="text-red-500"
+                    >
                       <BiTrash
                         className="inline-block mr-3 cursor-pointer"
                         size={20}
@@ -140,8 +155,8 @@ export const BestSellerList = () => {
   }, []);
   const getProducts = async () => {
     let res = await fetchBestSeller();
-    if (res && res.data && res.data.content) {
-      setListProduct(res.data.content);
+    if (res && res.data) {
+      setListProduct(res.data);
     }
   };
   return (
@@ -164,8 +179,7 @@ export const BestSellerList = () => {
             <td className=" h-[64px] p-[25px] text-center">Image</td>
             <td className=" h-[64px] p-[25px] text-center">Name</td>
             <td className=" h-[64px] p-[25px] text-center">Price</td>
-            <td className=" h-[64px] p-[25px] text-center">Brand</td>
-            <td className=" h-[64px] p-[25px] text-center">Film</td>
+            <td className=" h-[64px] p-[25px] text-center">Sold</td>
           </tr>
         </thead>
         <tbody>
@@ -179,17 +193,18 @@ export const BestSellerList = () => {
                 >
                   <td className="w-auto ">
                     <img
-                      src={item.medias[0].url}
-                      alt={item.id}
+                      src={item.product.image}
+                      alt={item.product.name}
                       className="object-contain h-20 w-full"
                     ></img>
                   </td>
-                  <td className="w-auto ">{item.name}</td>
-                  <td className="w-auto text-center">{item.price}</td>
-                  <td className="w-auto text-center">
-                    {item.brand ? item.brand.name : ""}
+                  <td className="w-auto ">{item.product.name}</td>
+                  <td className="w-auto text-center">{item.product.price}</td>
+                  <td className="w-auto text-center">{item.quantity}</td>
+                  {/* <td className="w-auto text-center">
+                    {item.product.brand ? item.brand.name : ""}
                   </td>
-                  <td className="w-auto text-center">{item.film.name}</td>
+                  <td className="w-auto text-center">{item.film.name}</td> */}
                 </tr>
               );
             })}
@@ -200,6 +215,7 @@ export const BestSellerList = () => {
 };
 
 export const FilmList = () => {
+  const [showModal, setShowModal] = useState(false);
   const [listFilm, setListFilm] = useState([]);
   useEffect(() => {
     getFilms();
@@ -210,48 +226,85 @@ export const FilmList = () => {
       setListFilm(res.data);
     }
   };
-
+  const handleOnClose = () => {
+    setShowModal(false);
+  };
+  const handleDelete = async (id) => {
+    let res = await deleteFilm(id);
+    if (res) {
+      window.location.reload();
+      toast.success(`Delete film #${id} is succeed!`);
+    } else {
+      toast.error("Delete failed!");
+    }
+  };
   return (
-    <div className="w-[50%] bg-white h-auto shadow-lg flex mx-auto my-0 flex-col rounded-2xl p-8 gap-3 overflow-y-auto">
+    <div className="w-[50%] max-h-[800px] bg-white h-auto shadow-lg flex mx-auto my-0 flex-col rounded-2xl p-8 gap-3">
       <div className="flex justify-between ">
         <div className="font-medium flex items-center text-xl">Film List</div>
         <div className="w-auto flex-col items-center">
-          <ButtonCustom
-            util={<AiOutlinePlus size={30} />}
-            styles="bg-orange-400 flex justify-center items-center text-white"
-            link="add-film"
-          />
-          {/* <span>Add New Film</span> */}
+          <button
+            className="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+            type="button"
+            onClick={() => setShowModal(true)}
+          >
+            <AiOutlinePlus size={30} />
+          </button>
         </div>
       </div>
-      <table className="w-full">
-        <thead>
-          <tr className="bg-stone-100 text-gray-400 text-left h-[64px] ">
-            <td className=" h-[64px] p-[25px] text-center">ID</td>
-            <td className=" h-[64px] p-[25px] text-center">Name</td>
-          </tr>
-        </thead>
-        <tbody>
-          {listFilm &&
-            listFilm.length > 0 &&
-            listFilm.map((item, index) => {
-              return (
-                <tr
-                  className=" h-[64px] border-b-[1px] border-b-slate-200"
-                  key={`film-${index}`}
-                >
-                  <td className="w-auto text-center">{item.id}</td>
-                  <td className="w-auto text-center">{item.name}</td>
-                </tr>
-              );
-            })}
-        </tbody>
-      </table>
+      <div className="max-h-[600px] overflow-y-auto block">
+        <table className="w-full">
+          <thead className="sticky top-0">
+            <tr className="bg-stone-100 text-gray-400 text-left  ">
+              <td className="  p-[25px] text-center">ID</td>
+              <td className="  p-[25px] text-center">Name</td>
+              <td className="  p-[25px] text-center">Action</td>
+            </tr>
+          </thead>
+          <tbody className="h-[600px]">
+            {listFilm &&
+              listFilm.length > 0 &&
+              listFilm.map((item, index) => {
+                return (
+                  <tr
+                    className=" border-b-[1px] border-b-slate-200"
+                    key={`film-${index}`}
+                  >
+                    <td className="w-auto text-center">{item.id}</td>
+                    <td className="w-auto text-center">{item.name}</td>
+                    <td className="w-auto text-center ">
+                      <Link
+                        to={`/edit-product/${item.id}`}
+                        className="text-blue-600"
+                      >
+                        <CiEdit
+                          className="inline-block mr-3 cursor-pointer"
+                          size={20}
+                        />
+                      </Link>
+                      <a
+                        onClick={() => handleDelete(item.id)}
+                        className="text-red-500"
+                      >
+                        <BiTrash
+                          className="inline-block mr-3 cursor-pointer"
+                          size={20}
+                        />
+                      </a>
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+      </div>
+      <Modal showModal={showModal} onClose={handleOnClose} />
     </div>
   );
 };
 
 export const BrandList = () => {
+  const [showModal, setShowModal] = useState(false);
   const [listBrand, setListBrand] = useState([]);
   useEffect(() => {
     getBrands();
@@ -262,41 +315,79 @@ export const BrandList = () => {
       setListBrand(res.data);
     }
   };
+  const handleOnClose = () => {
+    setShowModal(false);
+  };
+  const handleDelete = async (id) => {
+    let res = await deleteBrand(id);
+    if (res) {
+      window.location.reload();
+      toast.success(`Delete product #${id} is succeed!`);
+    } else {
+      toast.error("Delete failed!");
+    }
+  };
   return (
-    <div className="w-[50%] bg-white h-auto shadow-lg flex mx-auto my-0 flex-col rounded-2xl p-8 gap-3 overflow-y-auto">
+    <div className="w-[50%] max-h-[800px] bg-white h-auto shadow-lg flex mx-auto my-0 flex-col rounded-2xl p-8 gap-3">
       <div className="flex justify-between ">
         <div className="font-medium flex items-center text-xl">Brand List</div>
         <div className="w-auto flex-col items-center">
-          <ButtonCustom
-            util={<AiOutlinePlus size={30} />}
-            styles="bg-orange-400 flex justify-center items-center text-white"
-            link="add-brand"
-          />
+          <button
+            className="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+            type="button"
+            onClick={() => setShowModal(true)}
+          >
+            <AiOutlinePlus size={30} />
+          </button>
         </div>
       </div>
-      <table className="w-full">
-        <thead>
-          <tr className="bg-stone-100 text-gray-400 text-left h-[64px] ">
-            <td className=" h-[64px] p-[25px] text-center">ID</td>
-            <td className=" h-[64px] p-[25px] text-center">Name</td>
-          </tr>
-        </thead>
-        <tbody>
-          {listBrand &&
-            listBrand.length > 0 &&
-            listBrand.map((item, index) => {
-              return (
-                <tr
-                  className=" h-[64px] border-b-[1px] border-b-slate-200"
-                  key={`brand-${index}`}
-                >
-                  <td className="w-auto text-center">{item.id}</td>
-                  <td className="w-auto text-center">{item.name}</td>
-                </tr>
-              );
-            })}
-        </tbody>
-      </table>
+      <div className="max-h-[600px] overflow-y-auto block">
+        <table className="w-full">
+          <thead className="sticky top-0">
+            <tr className="bg-stone-100 text-gray-400 text-left  ">
+              <td className="  p-[25px] text-center">ID</td>
+              <td className="  p-[25px] text-center">Name</td>
+              <td className="  p-[25px] text-center">Action</td>
+            </tr>
+          </thead>
+          <tbody className="h-[600px] ">
+            {listBrand &&
+              listBrand.length > 0 &&
+              listBrand.map((item, index) => {
+                return (
+                  <tr
+                    className="  border-b-[1px] border-b-slate-200"
+                    key={`brand-${index}`}
+                  >
+                    <td className="w-auto text-center">{item.id}</td>
+                    <td className="w-auto text-center">{item.name}</td>
+                    <td className="w-auto text-center ">
+                      <Link
+                        to={`/edit-product/${item.id}`}
+                        className="text-blue-600"
+                      >
+                        <CiEdit
+                          className="inline-block mr-3 cursor-pointer"
+                          size={20}
+                        />
+                      </Link>
+                      <a
+                        onClick={() => handleDelete(item.id)}
+                        className="text-red-500"
+                      >
+                        <BiTrash
+                          className="inline-block mr-3 cursor-pointer"
+                          size={20}
+                        />
+                      </a>
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+      </div>
+      <Modal showModal={showModal} onClose={handleOnClose} />
     </div>
   );
 };
@@ -319,11 +410,6 @@ export const OrderList = (props) => {
       setTotalOrders(res.data.totalElements);
     }
   };
-  // console.log(listOrder[0].orderDetailList.length);
-  // const pageNumbers = [];
-  // for (let i = 0; i < totalpages; i++) {
-  //   pageNumbers.push(i);
-  // }
 
   const paginateFront = () => {
     getOrders(currentPage + 1);
@@ -366,12 +452,12 @@ export const OrderList = (props) => {
                   <td className="w-auto text-center">{item.created_date}</td>
                   <td className="w-auto text-center">{""}</td>
                   <td className="w-auto text-center ">
-                    <a href="/#" className="text-blue-600">
+                    <Link to={`/order/${item.id}`} className="text-blue-600">
                       <CiEdit
                         className="inline-block mr-3 cursor-pointer"
                         size={20}
                       />
-                    </a>
+                    </Link>
                   </td>
                 </tr>
               );
@@ -389,23 +475,87 @@ export const OrderList = (props) => {
   );
 };
 export const CustomerList = (data) => {
+  const [listUser, setListUser] = useState([]);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalpages, setTotalPages] = useState();
+  const [size] = useState(6);
+  useEffect(() => {
+    // Call apis
+    getUsers(0);
+  }, []);
+  const getUsers = async (page) => {
+    let res = await fetchAllUsers(page);
+    // console.log(res);
+    if (res && res.data && res.data.content) {
+      setListUser(res.data.content);
+      setTotalPages(res.data.totalPages);
+      setTotalUsers(res.data.totalElements);
+      // console.log(res.data.totalElements);
+    }
+  };
+  const paginateFront = () => {
+    getUsers(currentPage + 1);
+    setCurrentPage(currentPage + 1);
+  };
+  const paginateBack = () => {
+    getUsers(currentPage - 1);
+    setCurrentPage(currentPage - 1);
+  };
   return (
     <div className="w-full bg-white shadow-lg h-auto flex flex-col rounded-2xl p-8 gap-8">
       <div className="flex justify-between ">
-        <div className="font-medium text-xl">{data.header}</div>
-        <div className="w-[63px] flex items-center">
-          <span className="flex items-center text-[14px] font-semibold font-sans ">
-            More
-            <BsArrowRightShort size={20} className="text-gray-400" />
-          </span>
-        </div>
+        <div className="font-medium text-xl">User List</div>
       </div>
       <table className="w-full">
         <thead>
-          <tr className="bg-stone-100 text-gray-400 text-left h-[64px] "></tr>
+          <tr className="bg-stone-100 text-gray-400 text-left h-[64px] font-semibold ">
+            <td className=" h-[64px] p-[25px] text-center">ID</td>
+            <td className=" h-[64px] p-[25px] text-center">Name</td>
+            <td className=" h-[64px] p-[25px] text-center">Avatar</td>
+            <td className=" h-[64px] p-[25px] text-center">Fullname</td>
+            <td className=" h-[64px] p-[25px] text-center">PhoneNumber</td>
+            <td className=" h-[64px] p-[25px] text-center">TotalOrders</td>
+            <td className=" h-[64px] p-[25px] text-center">Date Created</td>
+            <td className=" h-[64px] p-[25px] text-center">Action</td>
+          </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+          {listUser &&
+            listUser.length > 0 &&
+            listUser.map((item, index) => {
+              return (
+                <tr
+                  className=" h-[64px] border-b-[1px] border-b-slate-200"
+                  key={`order-${index}`}
+                >
+                  <td className="w-auto text-center">{item.id}</td>
+                  <td className="w-auto text-center">{item.email}</td>
+                  <td className="w-auto text-center">{item.avatar}</td>
+                  <td className="w-auto ">{item.fullName}</td>
+                  <td className="w-auto text-center">{item.phoneNumber}</td>
+                  <td className="w-auto text-center">{item.orderDTO.length}</td>
+                  <td className="w-auto text-center">{item.created_date}</td>
+                  <td className="w-auto text-center ">
+                    <Link to={`/customer/${item.id}`} className="text-blue-600">
+                      <CiEdit
+                        className="inline-block mr-3 cursor-pointer"
+                        size={20}
+                      />
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })}
+        </tbody>
       </table>
+      <Pagination
+        handlePageFront={paginateFront}
+        handlePageBack={paginateBack}
+        currentPage={currentPage}
+        size={size}
+        totalItems={totalUsers}
+      />
     </div>
   );
 };

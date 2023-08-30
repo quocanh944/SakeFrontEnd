@@ -8,13 +8,17 @@ const fetchAllProducts = (page) => {
 };
 
 export { fetchAllProducts };
-
+const token = localStorage.getItem("token");
 const fetchBestSeller = () => {
-  return axios.get(`api/products?page=0&size=6&sort=ASC`);
+  return axios.get(`api/products/best-seller?amount=6`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 export { fetchBestSeller };
-const token = localStorage.getItem("token");
+
 const createProduct = (product) => {
   return axios.post(`api/products`, product, {
     headers: {
@@ -41,3 +45,12 @@ const updateProduct = (id, product) => {
 };
 
 export { updateProduct };
+
+const deleteProduct = (id) => {
+  return axios.delete(`api/products/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+export { deleteProduct };
