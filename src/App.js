@@ -1,5 +1,5 @@
 import Header from './components/comon/Header'
-import { Routes, Route, useSearchParams, useNavigate } from 'react-router-dom';
+import { Routes, Route, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import './App.css';
 import Footer from './components/comon/Footer';
 import Body1 from './pages/Body1';
@@ -14,10 +14,18 @@ import { useEffect, useState } from 'react';
 
 function App() {
   const [params, setParams] = useSearchParams();
-  const [user, setUser] = useState(false)
   const navigate = useNavigate()
+  const location = useLocation()
+
 
   let id = params.get("id")
+
+  useEffect(()=> {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  },[location])
   return (
     // <div className='flex justify-center bg-backgroundprimary'>
     <div className='max-w-[1440px] mx-auto tracking-[-0.6px] bg-backgroundprimary flex-shrink-0'>
@@ -25,12 +33,12 @@ function App() {
       <Routes>
         <Route path='/' element={<Body1 />} />
         <Route path='/login' element={<Login />} />
-        {<Route path='/cart' element={<Cart />} />}
+        <Route path='/cart' element={<Cart />} />
         <Route path='/checkout' element={<Checkout />} />
         <Route path='/review' element={<Review />} />
         <Route path='/shop' element={<ShopMain />} />
         <Route path='/register' element={<Register />} />
-        <Route path={`/product`} element={<ProductDetail id={id} />} />
+        <Route path='/product' element={<ProductDetail id={id} />} />
       </Routes>
       {/* <ProductDetail id="123" /> */}
       <Footer />

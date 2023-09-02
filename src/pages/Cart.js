@@ -6,6 +6,10 @@ import { Link } from 'react-router-dom'
 // import RedirectRoute from './RedirectRoute'
 
 export default function Cart() {
+    if (window.localStorage.getItem("token") == null && window.location.pathname !== "/login") {
+        window.location.href = "/login";
+    }
+
     return (
         <div className='flex gap-20'>
             <div className='basis-7/12 flex flex-col pl-36 pt-[51px]'>

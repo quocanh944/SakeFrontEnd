@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from '../header/Navbar';
 import UserSpace from '../header/UserSpace';
 
-const header = (props) => {
+const header = () => {
     return (
         <div className='border'>
             <div class="flex h-[45px] w-full bg-[#000] [&>*:not(:last-child)]:uppercase justify-around items-center">

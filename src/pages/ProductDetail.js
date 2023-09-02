@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import ProductDetailSlideIMG from '../components/Product/ProductDetailSlideIMG'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 export default function ProductDetail({ id }) {
     const [product, setProduct] = useState({})
+    const [quantity, setQuantity] = useState(0)
+    const navigate = useNavigate()
 
     useEffect(() => {
         axios
@@ -26,7 +29,31 @@ export default function ProductDetail({ id }) {
     } catch (error) {
 
     }
-    const [quantity, setQuantity] = useState(0)
+    const handleAdd = async (e) => {
+        e.preventDefault()
+        if(!window.localStorage.getItem('token')){
+            navigate('/login')
+            return
+        }
+        if (quantity === 0) {
+            alert('Quantity must equal or more than 1!')
+        } else {
+            try {
+                let res = await axios.post('http://localhost:8080/api/carts/add',null, {
+                    params: {
+                        productId: product.id
+                    }
+                }, {
+                    headers: {
+                        'Authorization': 'Bearer ' + window.localStorage.getItem('token')
+                    }
+                })
+                console.log(res);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
     return (
         <div className='flex pb-20 max-w-[1440px]'>
             <div className='basis-6/12 mt-10'>
@@ -42,7 +69,7 @@ export default function ProductDetail({ id }) {
                         {/* Stock */}
                         <div className='text-[22px] leading-9'> Kho: {product.quantity} </div>
                     </div>
-                    <div className='text-[22px] leading-9 mb-4'>{product.price}₫</div>
+                    <div className='text-[22px] leading-9 mb-4'>{product.price?.toLocaleString()}₫</div>
                     <div>
                         <form action='' method='post'>
                             <div className='flex max-w-[20%] justify-between px-2 items-center bg-[#fff] border mb-5'>
@@ -55,7 +82,13 @@ export default function ProductDetail({ id }) {
                                     quantity < product.quantity ? setQuantity(quantity + 1) : setQuantity(product.quantity)
                                 }}>+</div>
                             </div>
-                            <button type='submit' className='w-full text-[#fff] bg-[#F94C10] text-xl leading-7 py-2 rounded-full'>Add to cart</button>
+                            <button
+                                type='submit'
+                                className='w-full text-[#fff] bg-[#F94C10] text-xl leading-7 py-2 rounded-full'
+                                onClick={handleAdd}
+                            >
+                                Add to cart
+                            </button>
                         </form>
                     </div>
                 </div>

@@ -19,7 +19,6 @@ export default function ShopMain() {
     const [sort, setSort] = useState('ASC')
     const [brandFilter, setBrandFilter] = useState([])
     const [filmFilter, setFilmFilter] = useState([])
-    const [filters, setFilters] = useState([])
 
     console.log('==========re-render========');
 
@@ -44,7 +43,7 @@ export default function ShopMain() {
         if (brandFilter || filmFilter) {
             let filterBrand = async () => {
                 brandFilter.map(async id => {
-                    let result = await axios('http://localhost:8080/api/products/film/' + id, {
+                    let result = await axios('http://localhost:8080/api/products/brand/' + id, {
                         params: {
                             page: page,
                             size: 6,
@@ -91,10 +90,7 @@ export default function ShopMain() {
     // setProductFilter(prePr => {
     //     return [...new Set(prePr)]
     // })
-    
 
-    console.log('filter brand: ', brandFilter);
-    console.log('filter film: ', filmFilter);
     const handleRemoveProductByBrand = (id) => {
         setProductFilter(pre => {
             pre.filter(item => item?.id === id)
@@ -105,7 +101,6 @@ export default function ShopMain() {
             pre.filter(item => item?.id === id)
         })
     }
-    console.log(productFilter);
 
     const sortProductFilter = (pre, sortValue) => {
         switch (sortValue) {
@@ -139,7 +134,7 @@ export default function ShopMain() {
                 <div className='pt-[43px] ml-[145px]'>
                     <div className='mb-5'>
                         <div className='inline-block w-[75px] text-[22px] font-semibold leading-[30px] tracking-[-0.55px] mr-2'>Filters</div>
-                        <button type='reset' className='inline-block text-[#C4C4C4] text-[14px] leading-5 tracking-[-0.4px] underline' onClick={()=> {
+                        <button type='reset' className='inline-block text-[#C4C4C4] text-[14px] leading-5 tracking-[-0.4px] underline' onClick={() => {
                             setBrandFilter([])
                             setFilmFilter([])
                             document.querySelectorAll('.brand').forEach(item => item.checked = false)

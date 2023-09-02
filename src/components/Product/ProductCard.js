@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 
 export default function ProductCard({ id, name, price, quantity, media, description, flim, brand, discounted }) {
 
+  price = price?.toLocaleString();
 
   return (
     <Link className='max-w-[265px] shadow-[rgba(0,0,0,0.24)_0px_3px_8px]' to={`/product?id=${id}`}>
@@ -17,7 +18,7 @@ export default function ProductCard({ id, name, price, quantity, media, descript
         </div>
 
         <div className='mb-3'>
-          <ProductPrice originalPrice={`${price}₫`} discountedPrice={`${price}₫`} discount="12" />
+          <ProductPrice originalPrice={`${price}₫`}/>
         </div>
       </div>
     </Link>
