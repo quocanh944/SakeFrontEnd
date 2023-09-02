@@ -18,12 +18,16 @@ const addFilm = (name) => {
 };
 export { addFilm };
 
-const updateFilm = (id) => {
-  return axios.put(`api/films/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+const updateFilm = (id, name) => {
+  return axios.put(
+    `api/films/${id}`,
+    { name },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
 export { updateFilm };
 
@@ -35,3 +39,8 @@ const deleteFilm = (id) => {
   });
 };
 export { deleteFilm };
+
+const getFilmByID = (id) => {
+  return axios.get(`api/films/${id}`);
+};
+export { getFilmByID };

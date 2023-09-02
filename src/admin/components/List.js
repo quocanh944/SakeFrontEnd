@@ -16,7 +16,12 @@ import EditProduct from "../form/EditProduct";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { fetchAllUsers } from "../services/UserService";
-import Modal from "./Modal";
+import {
+  ModalAddBrand,
+  ModalAddFilm,
+  ModalEditBrand,
+  ModalEditFilm,
+} from "./Modal";
 // import { useState } from "react";
 const { BsArrowRightShort, CiEdit, BiTrash, AiOutlinePlus } = icons;
 
@@ -216,7 +221,9 @@ export const BestSellerList = () => {
 
 export const FilmList = () => {
   const [showModal, setShowModal] = useState(false);
+  const [showModalEdit, setShowModalEdit] = useState(false);
   const [listFilm, setListFilm] = useState([]);
+  const [dataFilm, setDataFilm] = useState("");
   useEffect(() => {
     getFilms();
   }, []);
@@ -228,16 +235,22 @@ export const FilmList = () => {
   };
   const handleOnClose = () => {
     setShowModal(false);
+    setShowModalEdit(false);
   };
   const handleDelete = async (id) => {
     let res = await deleteFilm(id);
     if (res) {
-      window.location.reload();
       toast.success(`Delete film #${id} is succeed!`);
+      window.location.reload();
     } else {
-      toast.error("Delete failed!");
+      toast.error("Delete is failed!");
     }
   };
+  const handleUpdate = (film) => {
+    setDataFilm(film);
+    setShowModalEdit(true);
+  };
+
   return (
     <div className="w-[50%] max-h-[800px] bg-white h-auto shadow-lg flex mx-auto my-0 flex-col rounded-2xl p-8 gap-3">
       <div className="flex justify-between ">
@@ -273,15 +286,15 @@ export const FilmList = () => {
                     <td className="w-auto text-center">{item.id}</td>
                     <td className="w-auto text-center">{item.name}</td>
                     <td className="w-auto text-center ">
-                      <Link
-                        to={`/edit-product/${item.id}`}
+                      <a
+                        onClick={() => handleUpdate(item)}
                         className="text-blue-600"
                       >
                         <CiEdit
                           className="inline-block mr-3 cursor-pointer"
                           size={20}
                         />
-                      </Link>
+                      </a>
                       <a
                         onClick={() => handleDelete(item.id)}
                         className="text-red-500"
@@ -298,14 +311,21 @@ export const FilmList = () => {
           </tbody>
         </table>
       </div>
-      <Modal showModal={showModal} onClose={handleOnClose} />
+      <ModalAddFilm showModal={showModal} onClose={handleOnClose} />
+      <ModalEditFilm
+        showModal={showModalEdit}
+        onClose={handleOnClose}
+        dataFilm={dataFilm}
+      />
     </div>
   );
 };
 
 export const BrandList = () => {
   const [showModal, setShowModal] = useState(false);
+  const [showModalEdit, setShowModalEdit] = useState(false);
   const [listBrand, setListBrand] = useState([]);
+  const [dataBrand, setDataBrand] = useState("");
   useEffect(() => {
     getBrands();
   }, []);
@@ -317,15 +337,20 @@ export const BrandList = () => {
   };
   const handleOnClose = () => {
     setShowModal(false);
+    setShowModalEdit(false);
   };
   const handleDelete = async (id) => {
     let res = await deleteBrand(id);
     if (res) {
-      window.location.reload();
       toast.success(`Delete product #${id} is succeed!`);
+      window.location.reload();
     } else {
       toast.error("Delete failed!");
     }
+  };
+  const handleUpdate = (brand) => {
+    setShowModalEdit(true);
+    setDataBrand(brand);
   };
   return (
     <div className="w-[50%] max-h-[800px] bg-white h-auto shadow-lg flex mx-auto my-0 flex-col rounded-2xl p-8 gap-3">
@@ -362,15 +387,15 @@ export const BrandList = () => {
                     <td className="w-auto text-center">{item.id}</td>
                     <td className="w-auto text-center">{item.name}</td>
                     <td className="w-auto text-center ">
-                      <Link
-                        to={`/edit-product/${item.id}`}
+                      <a
+                        onClick={() => handleUpdate(item)}
                         className="text-blue-600"
                       >
                         <CiEdit
                           className="inline-block mr-3 cursor-pointer"
                           size={20}
                         />
-                      </Link>
+                      </a>
                       <a
                         onClick={() => handleDelete(item.id)}
                         className="text-red-500"
@@ -387,7 +412,12 @@ export const BrandList = () => {
           </tbody>
         </table>
       </div>
-      <Modal showModal={showModal} onClose={handleOnClose} />
+      <ModalAddBrand showModal={showModal} onClose={handleOnClose} />
+      <ModalEditBrand
+        showModal={showModalEdit}
+        onClose={handleOnClose}
+        dataBrand={dataBrand}
+      />
     </div>
   );
 };
