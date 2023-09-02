@@ -2,7 +2,7 @@ import React from 'react'
 import Search from './Search'
 import { Link } from 'react-router-dom'
 
-export default function Navbar(props) {
+export default function Navbar({handleSeachValue}) {
 
     return (
         <div className="flex gap-8 text-[17px] h-[60px] justify-center items-center">
@@ -10,7 +10,7 @@ export default function Navbar(props) {
             <Link to="/shop" class="inline-flex ">Shop</Link>
             <Link to="/story" class="inline-flex ">Stories</Link>
             <Link to="/about" class="inline-flex ">About</Link>
-            <Search></Search>
+            <Search handleSeachValue={handleSeachValue}></Search>
         </div>
     )
 }

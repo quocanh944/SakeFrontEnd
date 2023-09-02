@@ -3,7 +3,7 @@ import ProductCard from '../components/Product/ProductCard'
 import BtnSort from '../components/comon/BtnSort'
 import axios from 'axios'
 
-export default function ShopMain() {
+export default function ShopMain({searchValue}) {
     //data sample
     const [products, setProducts] = useState([])
     const [page, setPage] = useState(0)
@@ -19,8 +19,6 @@ export default function ShopMain() {
     const [sort, setSort] = useState('ASC')
     const [brandFilter, setBrandFilter] = useState([])
     const [filmFilter, setFilmFilter] = useState([])
-
-    console.log('==========re-render========');
 
     const [totalPage, setTotalPage] = useState(0)
     useEffect(() => {
@@ -86,11 +84,6 @@ export default function ShopMain() {
             })
     }, [])
 
-
-    // setProductFilter(prePr => {
-    //     return [...new Set(prePr)]
-    // })
-
     const handleRemoveProductByBrand = (id) => {
         setProductFilter(pre => {
             pre.filter(item => item?.id === id)
@@ -112,9 +105,27 @@ export default function ShopMain() {
                 break;
         }
     }
-    useEffect(() => {
-        setProductFilter(pre => sortProductFilter(pre, sort))
-    }, [sort, productFilter])
+    useEffect(()=> {
+        const handleSearchAPI = async () => {
+            let res = await axios.get('http://localhost:8080/api/products/search', {
+                params: {
+                    name : searchValue,
+                    page : 0,
+                    size : 6,
+                    direction : 'ASC'
+                }
+            })
+            setProductFilter(() => res.data.content)
+        }
+        handleSearchAPI()
+    },[searchValue, page])
+
+    console.log('productFilter:', productFilter);
+
+    
+    // useEffect(() => {
+    //     setProductFilter(pre => sortProductFilter(pre, sort))
+    // }, [sort, productFilter])
 
     const mergeProducts = (productsA = [], productsB = [], id) => {
         const mergedProducts = [...productsA];
@@ -206,7 +217,7 @@ export default function ShopMain() {
                     <div className='grid grid-cols-3 gap-5 mb-10'>
                         {
 
-                            (brandFilter.length === 0) && (filmFilter.length === 0) ? products.map((product, index) => {
+                            (brandFilter.length === 0) && (filmFilter.length === 0) && searchValue === '' ? products.map((product, index) => {
                                 return <ProductCard key={index} id={product.id} name={product.name} price={product.price} quantity={product.quantity} media={product.medias[0]} description={product.description} flim={product.flim} brand={product.brand} discounted='0' />
                             }) : productFilter?.map((product, index) => {
                                 return <ProductCard key={index} id={product.id} name={product.name} price={product.price} quantity={product.quantity} media={product.medias[0]} description={product.description} flim={product.flim} brand={product.brand} discounted='0' />
