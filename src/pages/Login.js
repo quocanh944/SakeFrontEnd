@@ -40,7 +40,7 @@ export default function Login({ getUser }) {
               'Authorization': 'Bearer ' + res.data.accessToken
             }
           })
-          window.localStorage.setItem('user',userRes.data.fullName)
+          window.localStorage.setItem('user', userRes.data.fullName)
         }
         // console.log(userRes);
       } catch (error) {
@@ -61,14 +61,19 @@ export default function Login({ getUser }) {
           <div className='mb-5 text-[#A9ABBD] font-medium leading-[26px] tracking-[-0.2px]'>
             Login to continue
           </div>
-          {login ? <LoginInput
-            handleLogin={handleLogin}
-            handleEmail={(email) => setEmail(email)}
-            handlePassword={(password) => setPassword(password)}
-          /> : <LoginOptions handleClick={(e) => {
-            e.preventDefault()
-            setLogin(true)
-          }} />}
+          {
+            login
+              ? <LoginInput
+                handleLogin={handleLogin}
+                handleEmail={(email) => setEmail(email)}
+                handlePassword={(password) => setPassword(password)}
+              />
+              : <LoginOptions handleClick={(e) => {
+                e.preventDefault()
+                setLogin(true)
+              }}
+              />
+          }
         </div>
       </div>
       <div className='text-[#A9ABBD] text-[14px] font-medium tracking-[-0.3px] pt-7'>

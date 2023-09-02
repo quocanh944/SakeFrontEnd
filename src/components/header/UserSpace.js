@@ -12,7 +12,7 @@ export default function UserSpace() {
     }
     return (
         <div className='flex gap-[22px]'>
-            <ShopCart></ShopCart>
+            {window.localStorage.getItem('token') ? <ShopCart></ShopCart> : ''}
             {!window.localStorage.getItem('user')
                 ? <Link to='/login' className='inline-flex'>Login</Link>
                 : <div className='flex justify-between items-center w-full gap-2'>

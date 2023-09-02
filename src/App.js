@@ -1,5 +1,5 @@
 import Header from './components/comon/Header'
-import { Routes, Route, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+import { Routes, Route, useSearchParams, useLocation } from 'react-router-dom';
 import './App.css';
 import Footer from './components/comon/Footer';
 import Body1 from './pages/Body1';
@@ -14,9 +14,7 @@ import { useEffect, useState } from 'react';
 
 function App() {
   const [params, setParams] = useSearchParams();
-  const navigate = useNavigate()
   const location = useLocation()
-
 
   let id = params.get("id")
 
@@ -27,7 +25,6 @@ function App() {
     });
   },[location])
   return (
-    // <div className='flex justify-center bg-backgroundprimary'>
     <div className='max-w-[1440px] mx-auto tracking-[-0.6px] bg-backgroundprimary flex-shrink-0'>
       <Header />
       <Routes>
@@ -40,7 +37,6 @@ function App() {
         <Route path='/register' element={<Register />} />
         <Route path='/product' element={<ProductDetail id={id} />} />
       </Routes>
-      {/* <ProductDetail id="123" /> */}
       <Footer />
     </div>
     // </div>

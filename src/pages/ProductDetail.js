@@ -6,17 +6,22 @@ import { useNavigate } from 'react-router-dom'
 export default function ProductDetail({ id }) {
     const [product, setProduct] = useState({})
     const [quantity, setQuantity] = useState(0)
+    const [descrip, setDescrip] = useState([])
     const navigate = useNavigate()
 
+    
     useEffect(() => {
-        axios
-            .get('http://localhost:8080/api/products/' + id, {
-                params: {}
-            })
-            .then(res => {
-                setProduct(res.data)
-            })
+        const getProductAPI = async () => {
+            let res = await axios
+                .get('http://localhost:8080/api/products/' + id, {
+                    params: {}
+                })
+            setProduct(res.data)
+            setDescrip(res.data.description?.split("\n"))
+        }
+        getProductAPI()
     }, [])
+
     var imgL = []
     try {
         if (product.medias.length > 1) {
@@ -40,20 +45,21 @@ export default function ProductDetail({ id }) {
         } else {
             try {
                 let res = await axios.post('http://localhost:8080/api/carts/add',null, {
-                    params: {
-                        productId: product.id
-                    }
-                }, {
                     headers: {
                         'Authorization': 'Bearer ' + window.localStorage.getItem('token')
-                    }
+                    },
+                    params: {productId: product.id}
                 })
-                console.log(res);
+                if(res.data) {
+                    window.location.reload()
+                    alert(res.data)
+                }
             } catch (error) {
-                console.log(error);
+                // console.log(error);
             }
         }
     }
+    
     return (
         <div className='flex pb-20 max-w-[1440px]'>
             <div className='basis-6/12 mt-10'>
@@ -64,7 +70,7 @@ export default function ProductDetail({ id }) {
                     <div className='text-3xl font-semibold leading-[48px]'>
                         {product.name}
                     </div>
-                    <div>{product.description}</div>
+                    <div>{descrip.map(p => <p>{p}</p>)}</div>
                     <div>
                         {/* Stock */}
                         <div className='text-[22px] leading-9'> Kho: {product.quantity} </div>
