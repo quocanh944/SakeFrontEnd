@@ -3,7 +3,7 @@ import ProductCard from '../components/Product/ProductCard'
 import BtnSort from '../components/comon/BtnSort'
 import axios from 'axios'
 
-export default function ShopMain({searchValue}) {
+export default function ShopMain({ searchValue }) {
     //data sample
     const [products, setProducts] = useState([])
     const [page, setPage] = useState(0)
@@ -12,64 +12,11 @@ export default function ShopMain({searchValue}) {
     const [brands, setBrands] = useState([])
     const [films, setFilms] = useState([])
 
-
-    const [productFilter, setProductFilter] = useState([])
-
-
     const [sort, setSort] = useState('ASC')
-    const [brandFilter, setBrandFilter] = useState([])
-    const [filmFilter, setFilmFilter] = useState([])
+    const [brandFilter, setBrandFilter] = useState(new Set())
+    const [filmFilter, setFilmFilter] = useState(new Set())
 
     const [totalPage, setTotalPage] = useState(0)
-    useEffect(() => {
-        axios
-            .get('http://localhost:8080/api/products', {
-                params: {
-                    page: page,
-                    size: 6,
-                    sort: sort
-                }
-            })
-            .then(res => {
-                setProducts(preProduct => [...preProduct, ...res.data.content])
-                setTotalPage(res.data.totalPages)
-                setNumProduct(res.data.totalElements)
-            })
-    }, [page, sort])
-    useEffect(() => {
-        // numproduct? page?
-        if (brandFilter || filmFilter) {
-            let filterBrand = async () => {
-                brandFilter.map(async id => {
-                    let result = await axios('http://localhost:8080/api/products/brand/' + id, {
-                        params: {
-                            page: page,
-                            size: 6,
-                            sort: 'ASC'
-                        }
-                    })
-                    setProductFilter(prePro => mergeProducts(prePro, result.data.content, 'id'))
-                })
-            }
-            let filterFilm = async () => {
-                filmFilter.map(async (id) => {
-                    let result = await axios('http://localhost:8080/api/products/film/' + id, {
-                        params: {
-                            page: page,
-                            size: 6,
-                            sort: 'ASC'
-                        }
-                    })
-                    setProductFilter(prePro => mergeProducts(prePro, result.data.content, 'id'))
-                })
-            }
-            filterBrand()
-            filterFilm()
-        }
-        if ((brandFilter.length === 0) && (filmFilter.length === 0)) {
-            setProductFilter(() => [])
-        }
-    }, [page, filmFilter, brandFilter])
 
     useEffect(() => {
         axios
@@ -82,61 +29,65 @@ export default function ShopMain({searchValue}) {
             .then(res => {
                 setFilms(res.data)
             })
+        axios
+            .get('http://localhost:8080/api/products?page=0&size=6&direction=ASC')
+            .then(res => {
+                setProducts(res.data.content)
+                setNumProduct(res.data.totalElements)
+                setTotalPage(res.data.totalPages)
+            })
     }, [])
 
-    const handleRemoveProductByBrand = (id) => {
-        setProductFilter(pre => {
-            pre.filter(item => item?.id === id)
-        })
-    }
-    const handleRemoveProductByFilm = (id) => {
-        setProductFilter(pre => {
-            pre.filter(item => item?.id === id)
-        })
-    }
-
-    const sortProductFilter = (pre, sortValue) => {
-        switch (sortValue) {
-            case 'ASC':
-                return pre.slice().sort((a, b) => a.price - b.price)
-            case 'DESC':
-                return pre.slice().sort((a, b) => b.price - a.price)
-            default:
-                break;
+    useEffect(() => {
+        const query = getQueryString()
+        console.log(query);
+        if (query.indexOf('brands') !== -1 && query.indexOf('films') === -1) {
+            console.log(1)
+            axios
+                .get('http://localhost:8080/api/products/brand?' + query.replaceAll('brands', 'ids'))
+                .then(res => {
+                    setProducts(res.data.content)
+                    setNumProduct(res.data.totalElements)
+                    setTotalPage(res.data.totalPages)
+                })
         }
-    }
-    useEffect(()=> {
-        const handleSearchAPI = async () => {
-            let res = await axios.get('http://localhost:8080/api/products/search', {
-                params: {
-                    name : searchValue,
-                    page : 0,
-                    size : 6,
-                    direction : 'ASC'
-                }
+        if (query.indexOf('brands') === -1 && query.indexOf('films') !== -1) {
+            console.log(2)
+            axios
+                .get('http://localhost:8080/api/products/film?' + query.replaceAll('films', 'ids'))
+                .then(res => {
+                    setProducts(res.data.content)
+                    setNumProduct(res.data.totalElements)
+                    setTotalPage(res.data.totalPages)
+                })
+        }
+        axios
+            .get('http://localhost:8080/api/products?' + query)
+            .then(res => {
+                setProducts(res.data.content)
+                setNumProduct(res.data.totalElements)
+                setTotalPage(res.data.totalPages)
             })
-            setProductFilter(() => res.data.content)
+
+
+    }, [sort, brandFilter, filmFilter, page])
+
+    const getQueryString = () => {
+        const params = new URLSearchParams()
+        params.append('page', page)
+        params.append('size', 6)
+        params.append('direction', sort)
+        if (brandFilter.size > 0) {
+            brandFilter.forEach(brand => {
+                params.append('brands', brand)
+            })
         }
-        handleSearchAPI()
-    },[searchValue, page])
-
-    console.log('productFilter:', productFilter);
-
-    
-    // useEffect(() => {
-    //     setProductFilter(pre => sortProductFilter(pre, sort))
-    // }, [sort, productFilter])
-
-    const mergeProducts = (productsA = [], productsB = [], id) => {
-        const mergedProducts = [...productsA];
-        for (const obj2 of productsB) {
-            const value2 = obj2[id];
-            const exists = mergedProducts.some(obj1 => obj1[id] === value2);
-            if (!exists) {
-                mergedProducts.push(obj2);
-            }
+        if (filmFilter.size > 0) {
+            filmFilter.forEach(film => {
+                params.append('films', film)
+            })
         }
-        return mergedProducts;
+        return params.toString()
     }
 
     return (
@@ -164,11 +115,12 @@ export default function ShopMain({searchValue}) {
                                         <input type='checkbox' className='brand w-5 h-5 accent-primary mr-3 cursor-pointer' name={brand.id} onClick={(e) => {
                                             setPage(0)
                                             setBrandFilter((preBrands) => {
-                                                if (preBrands.find(item => item === e.target.name)) {
-                                                    handleRemoveProductByBrand(e.target.name)
-                                                    return preBrands.filter(item => (item !== e.target.name))
+                                                if (preBrands.has(e.target.name)) {
+                                                    preBrands.delete(e.target.name)
+                                                } else {
+                                                    preBrands.add(e.target.name)
                                                 }
-                                                return [...preBrands, e.target.name]
+                                                return new Set(preBrands)
                                             })
                                         }} />
                                         <span> {brand.name} </span>
@@ -189,11 +141,14 @@ export default function ShopMain({searchValue}) {
                                         <input type='checkbox' className='film w-5 h-5 accent-primary mr-3 cursor-pointer' name={film.id} onClick={(e) => {
                                             setPage(0)
                                             setFilmFilter((preFilms) => {
-                                                if (preFilms.find(item => item === e.target.name)) {
-                                                    handleRemoveProductByFilm(e.target.name)
-                                                    return preFilms.filter(item => (item !== e.target.name))
+                                                console.log(preFilms)
+                                                if (preFilms.has(e.target.name)) {
+                                                    preFilms.delete(e.target.name)
+                                                } else {
+                                                    preFilms.add(e.target.name)
                                                 }
-                                                return [...preFilms, e.target.name]
+                                                console.log(preFilms)
+                                                return new Set(preFilms)
                                             })
                                         }} />
                                         <span> {film.name} </span>
@@ -207,8 +162,6 @@ export default function ShopMain({searchValue}) {
                     <div className='flex flex-col items-end'>
                         {/* sort  option*/}
                         <BtnSort handleSort={(sortValue) => {
-                            setProducts([])
-                            setPage(0)
                             setSort(sortValue)
                         }}></BtnSort>
                         {/* number of products */}
@@ -216,10 +169,7 @@ export default function ShopMain({searchValue}) {
                     </div>
                     <div className='grid grid-cols-3 gap-5 mb-10'>
                         {
-
-                            (brandFilter.length === 0) && (filmFilter.length === 0) && searchValue === '' ? products.map((product, index) => {
-                                return <ProductCard key={index} id={product.id} name={product.name} price={product.price} quantity={product.quantity} media={product.medias[0]} description={product.description} flim={product.flim} brand={product.brand} discounted='0' />
-                            }) : productFilter?.map((product, index) => {
+                            products.map((product, index) => {
                                 return <ProductCard key={index} id={product.id} name={product.name} price={product.price} quantity={product.quantity} media={product.medias[0]} description={product.description} flim={product.flim} brand={product.brand} discounted='0' />
                             })
                         }
