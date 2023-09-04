@@ -1,13 +1,14 @@
 import React from 'react'
 import ShopCart from './ShopCart'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 
 export default function UserSpace() {
     const handleLogout = () => {
         window.localStorage.removeItem('token')
         window.localStorage.removeItem('user')
-        alert('Log out Success!')
+        toast.success('Log out Success!')
         window.location.reload()
     }
     return (

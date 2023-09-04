@@ -26,7 +26,6 @@ function App() {
       behavior: 'smooth'
     });
   },[location])
-  console.log(search);
   return (
     <div className='max-w-[1440px] mx-auto tracking-[-0.6px] bg-backgroundprimary flex-shrink-0'>
       <Header handleSeachValue={valueSeach => {

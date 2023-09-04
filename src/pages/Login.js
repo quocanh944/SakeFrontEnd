@@ -46,9 +46,9 @@ export default function Login({ getUser }) {
       } catch (error) {
       }
       navigate('/')
-      alert('Login success')
+      toast.success('Login success')
     } catch (error) {
-      alert('Incorrect Email or Password!')
+      toast.error('Incorrect Email or Password!')
     }
   }
   return (

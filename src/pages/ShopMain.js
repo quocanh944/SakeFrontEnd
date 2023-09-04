@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react'
 import ProductCard from '../components/Product/ProductCard'
 import BtnSort from '../components/comon/BtnSort'
 import axios from 'axios'
+import Pagination from '../components/comon/Pagination';
 
 export default function ShopMain({ searchValue }) {
+    console.log('===============re-render===============');
     //data sample
     const [products, setProducts] = useState([])
     const [page, setPage] = useState(0)
+    console.log("🚀 ~ file: ShopMain.js:12 ~ ShopMain ~ page:", page)
 
     const [numProduct, setNumProduct] = useState(0)
     const [brands, setBrands] = useState([])
@@ -17,6 +20,7 @@ export default function ShopMain({ searchValue }) {
     const [filmFilter, setFilmFilter] = useState(new Set())
 
     const [totalPage, setTotalPage] = useState(0)
+    console.log("🚀 ~ file: ShopMain.js:23 ~ ShopMain ~ totalPage:", totalPage)
 
     useEffect(() => {
         axios
@@ -77,6 +81,7 @@ export default function ShopMain({ searchValue }) {
         params.append('page', page)
         params.append('size', 6)
         params.append('direction', sort)
+        params.append('sort', sort)
         if (brandFilter.size > 0) {
             brandFilter.forEach(brand => {
                 params.append('brands', brand)
@@ -89,6 +94,9 @@ export default function ShopMain({ searchValue }) {
         }
         return params.toString()
     }
+    const handlePage = (value) => setPage(value)
+    const handleNextPage = (e) => setPage(pre => (pre+1) < (totalPage - 1) ? pre + 1 : (totalPage -1))
+    const handlePrePage = (e) => setPage(pre => pre > 0 ? pre - 1 : 0)
 
     return (
         <div>
@@ -147,7 +155,6 @@ export default function ShopMain({ searchValue }) {
                                                 } else {
                                                     preFilms.add(e.target.name)
                                                 }
-                                                console.log(preFilms)
                                                 return new Set(preFilms)
                                             })
                                         }} />
@@ -160,11 +167,9 @@ export default function ShopMain({ searchValue }) {
                 </div>
                 <div className='flex flex-col mt-[46px] mr-[142px]'>
                     <div className='flex flex-col items-end'>
-                        {/* sort  option*/}
                         <BtnSort handleSort={(sortValue) => {
                             setSort(sortValue)
                         }}></BtnSort>
-                        {/* number of products */}
                         <div className='h-7 text-[14px] leading-5 tracking-[-0.4px] mb-[18px]'>Total: {numProduct} Products</div>
                     </div>
                     <div className='grid grid-cols-3 gap-5 mb-10'>
@@ -175,15 +180,16 @@ export default function ShopMain({ searchValue }) {
                         }
                     </div>
                     <div className='flex justify-center items-center'>
-                        {page + 1 === totalPage ? <button className='w-[298px] h-[50px] block items-center justify-center text-textprimary text-center font-semibold leading-[22px] tracking-[-0.4px] border-2' onClick={function () {
-                            setPage(0)
-                            setProducts([])
-                        }}>Collapse products</button> : <button className='w-[298px] h-[50px] block items-center justify-center text-textprimary text-center font-semibold leading-[22px] tracking-[-0.4px] border-2' onClick={function () {
-                            setPage((prePage) => prePage + 1)
-                        }}>Load more products</button>}
+                        <Pagination
+                            totalPage={totalPage}
+                            currentPage={page}
+                            handlePrePage={handlePrePage}
+                            handleNextPage={handleNextPage}
+                            handlePage={handlePage}
+                        />
                     </div>
                 </div>
             </div>
         </div>
     )
-}
+    }

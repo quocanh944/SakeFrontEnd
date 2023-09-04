@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import ProductDetailSlideIMG from '../components/Product/ProductDetailSlideIMG'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 export default function ProductDetail({ id }) {
     const [product, setProduct] = useState({})
@@ -41,7 +42,7 @@ export default function ProductDetail({ id }) {
             return
         }
         if (quantity === 0) {
-            alert('Quantity must equal or more than 1!')
+            toast.error('Quantity must equal or more than 1!')
         } else {
             try {
                 let res = await axios.post('http://localhost:8080/api/carts/add',null, {
@@ -52,7 +53,7 @@ export default function ProductDetail({ id }) {
                 })
                 if(res.data) {
                     window.location.reload()
-                    alert(res.data)
+                    toast.success(res.data)
                 }
             } catch (error) {
                 // console.log(error);

@@ -7,6 +7,7 @@ import CheckoutShipping from '../components/checkout/CheckoutShipping'
 import CheckoutPayment from '../components/checkout/CheckoutPayment'
 import RedirectRoute from '../components/comon/RedirectRoute'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
 export default function Checkout() {
     const handleFName = (e) => {
@@ -46,7 +47,7 @@ export default function Checkout() {
 
     const checkoutOrder = async () => {
         if (!fullName || !address || !phoneNumber) {
-            alert('Pls enter all of requied fill!')
+            toast.error('Pls enter all of requied fill!')
         }
         try {
             let res = await axios.post('http://localhost:8080/api/orders/checkout', {
@@ -58,7 +59,7 @@ export default function Checkout() {
                     'Authorization': 'Bearer ' + window.localStorage.getItem('token')
                 }
             })
-            if (res.data.data) alert(res.data.data)
+            if (res.data.data) toast.success(res.data.data)
         } catch (error) {
 
         }
