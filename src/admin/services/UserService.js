@@ -13,3 +13,12 @@ const fetchAllUsers = (page) => {
 };
 
 export { fetchAllUsers };
+
+const getUser = (id) => {
+  return axios.get(`api/user/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+export { getUser };

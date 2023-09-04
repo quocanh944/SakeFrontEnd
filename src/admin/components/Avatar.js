@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import defaultImg from "../../assets/images.png";
+import { AiOutlineUser } from "react-icons/ai";
 const Avatar = (props) => {
   const inputRef = useRef(null);
 
@@ -20,14 +21,11 @@ const Avatar = (props) => {
     console.log(URL.createObjectURL(file));
   };
   return (
-    <div
-      className="w-[250px] h-[220px] m-auto cursor-pointer"
-      onClick={handleImageClick}
-    >
+    <div className={props.styles} onClick={handleImageClick}>
       {image ? (
         <img src={image.preview} alt="" className="rounded w-full h-full" />
       ) : (
-        <img src={defaultImg} alt="" className="rounded w-full h-full" />
+        <img src={defaultImg} alt="" className="rounded w-full h-full " />
       )}
       <input
         type="file"

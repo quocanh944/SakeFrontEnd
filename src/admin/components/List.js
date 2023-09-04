@@ -15,7 +15,7 @@ import { fetchAllOrders } from "../services/OrderService";
 import EditProduct from "../form/EditProduct";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { fetchAllUsers } from "../services/UserService";
+import { fetchAllUsers, getUser } from "../services/UserService";
 import {
   ModalAddBrand,
   ModalAddFilm,
@@ -25,7 +25,7 @@ import {
 // import { useState } from "react";
 const { BsArrowRightShort, CiEdit, BiTrash, AiOutlinePlus } = icons;
 
-export const ProductList = (props) => {
+export const ProductList = () => {
   const [listProduct, setListProduct] = useState([]);
   const [totalpages, setTotalPages] = useState();
   const [totalProducts, setTotalProducts] = useState(0);
@@ -422,7 +422,7 @@ export const BrandList = () => {
   );
 };
 
-export const OrderList = (props) => {
+export const OrderList = () => {
   const [listOrder, setListOrder] = useState([]);
   const [totalOrders, setTotalOrders] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
@@ -504,7 +504,7 @@ export const OrderList = (props) => {
     </div>
   );
 };
-export const CustomerList = (data) => {
+export const CustomerList = () => {
   const [listUser, setListUser] = useState([]);
   const [totalUsers, setTotalUsers] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
@@ -561,11 +561,19 @@ export const CustomerList = (data) => {
                 >
                   <td className="w-auto text-center">{item.id}</td>
                   <td className="w-auto text-center">{item.email}</td>
-                  <td className="w-auto text-center">{item.avatar}</td>
-                  <td className="w-auto ">{item.fullName}</td>
-                  <td className="w-auto text-center">{item.phoneNumber}</td>
-                  <td className="w-auto text-center">{item.orderDTO.length}</td>
-                  <td className="w-auto text-center">{item.created_date}</td>
+                  <td className="w-auto text-center">
+                    {item.avatar || "Updating... "}
+                  </td>
+                  <td className="w-auto ">{item.fullName || "Updating... "}</td>
+                  <td className="w-auto text-center">
+                    {item.phoneNumber || "Updating... "}
+                  </td>
+                  <td className="w-auto text-center">
+                    {item.orderDTO.length || "Updating... "}
+                  </td>
+                  <td className="w-auto text-center">
+                    {item.created_date || "Updating... "}
+                  </td>
                   <td className="w-auto text-center ">
                     <Link to={`/customer/${item.id}`} className="text-blue-600">
                       <CiEdit
@@ -589,3 +597,81 @@ export const CustomerList = (data) => {
     </div>
   );
 };
+
+export const ProductPusrchased = (props) => {
+  const [listProduct, setListProduct] = useState(props.order);
+  useEffect(() => {
+    setListProduct(props.order);
+  }, [props.order]);
+  return (
+    <div className="w-full bg-white shadow-lg h-full flex flex-col rounded-2xl p-8 gap-4 ">
+      <div className="font-medium flex items-center text-xl">List Order</div>
+      <div className="max-h-[300px] overflow-y-auto block">
+        <table className="w-full h-[300px]">
+          <thead className="sticky top-0">
+            <tr className="bg-stone-100 text-gray-400 text-left font-semibold ">
+              <td className="  p-[5px] text-center">ID</td>
+              <td className="  p-[5px] text-center">Quantity</td>
+              <td className="  p-[5px] text-center">Price</td>
+              <td className="  p-[5px] text-center">Order date</td>
+            </tr>
+          </thead>
+          <tbody className="h-[300px]">
+            {listProduct &&
+              listProduct.length > 0 &&
+              listProduct.map((item, index) => {
+                // console.log("Id: ", item.id);
+                // console.log("Quantity: ", item.quantity);
+                // console.log("Name product: ", item.product.name);
+                return (
+                  <tr
+                    className="  border-b-[1px] border-b-slate-200"
+                    key={`order-${index}`}
+                  >
+                    <td className="w-auto text-center">
+                      <Link to={`/order/${item.id}`}>{item.id}</Link>
+                    </td>
+                    <td className="w-auto text-center">
+                      {item.orderDetailList.length}
+                    </td>
+                    <td className="w-auto text-center">{item.total}</td>
+                    <td className="w-auto text-center">{item.created_date}</td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* {listOrder &&
+            listOrder.length > 0 &&
+            listOrder.map((item, index) => {
+              return (
+                <tr
+                  className=" h-[64px] border-b-[1px] border-b-slate-200"
+                  key={`order-${index}`}
+                >
+                  <td className="w-auto text-center">{item.name}</td>
+                  <td className="w-auto ">{item.address}</td>
+                  <td className="w-auto text-center">
+                    {item.orderDetailList.length}
+                  </td>
+                  <td className="w-auto text-center">{item.total}</td>
+                  <td className="w-auto text-center">{item.created_date}</td>
+                  <td className="w-auto text-center">{""}</td>
+                  <td className="w-auto text-center ">
+                    <Link to={`/order/${item.id}`} className="text-blue-600">
+                      <CiEdit
+                        className="inline-block mr-3 cursor-pointer"
+                        size={20}
+                      />
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })} */}
+    </div>
+  );
+};
+
+export const CartList = () => {};
