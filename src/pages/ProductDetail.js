@@ -4,13 +4,13 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-export default function ProductDetail({ id }) {
+export default function ProductDetail({ id, setCart }) {
     const [product, setProduct] = useState({})
     const [quantity, setQuantity] = useState(0)
     const [descrip, setDescrip] = useState([])
     const navigate = useNavigate()
 
-    
+
     useEffect(() => {
         const getProductAPI = async () => {
             let res = await axios
@@ -37,7 +37,7 @@ export default function ProductDetail({ id }) {
     }
     const handleAdd = async (e) => {
         e.preventDefault()
-        if(!window.localStorage.getItem('token')){
+        if (!window.localStorage.getItem('token')) {
             navigate('/login')
             return
         }
@@ -45,22 +45,33 @@ export default function ProductDetail({ id }) {
             toast.error('Quantity must equal or more than 1!')
         } else {
             try {
-                let res = await axios.post('http://localhost:8080/api/carts/add',null, {
+                let res = await axios.post('http://localhost:8080/api/carts/add', null, {
                     headers: {
                         'Authorization': 'Bearer ' + window.localStorage.getItem('token')
                     },
-                    params: {productId: product.id}
+                    params: {
+                        productId: product.id,
+                        quantity: quantity
+                    }
                 })
-                if(res.data) {
-                    window.location.reload()
+                if (res.data) {
                     toast.success(res.data)
+                    const getCartAPI = async () => {
+                        let res = await axios.get('http://localhost:8080/api/carts/', {
+                            headers: {
+                                'Authorization': 'Bearer ' + window.localStorage.getItem('token')
+                            }
+                        })
+                        setCart(res.data.cartItems?.length)
+                    }
+                    getCartAPI()
                 }
             } catch (error) {
                 // console.log(error);
             }
         }
     }
-    
+
     return (
         <div className='flex pb-20 max-w-[1440px]'>
             <div className='basis-6/12 mt-10'>

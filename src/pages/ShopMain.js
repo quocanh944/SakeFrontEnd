@@ -6,6 +6,7 @@ import Pagination from '../components/comon/Pagination';
 
 export default function ShopMain({ searchValue }) {
     console.log('===============re-render===============');
+    console.log(searchValue);
     //data sample
     const [products, setProducts] = useState([])
     const [page, setPage] = useState(0)
@@ -73,6 +74,10 @@ export default function ShopMain({ searchValue }) {
                 setTotalPage(res.data.totalPages)
             })
 
+        const element = document.getElementById('shopmain');
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
 
     }, [sort, brandFilter, filmFilter, page])
 
@@ -80,7 +85,6 @@ export default function ShopMain({ searchValue }) {
         const params = new URLSearchParams()
         params.append('page', page)
         params.append('size', 6)
-        params.append('direction', sort)
         params.append('sort', sort)
         if (brandFilter.size > 0) {
             brandFilter.forEach(brand => {
@@ -95,11 +99,11 @@ export default function ShopMain({ searchValue }) {
         return params.toString()
     }
     const handlePage = (value) => setPage(value)
-    const handleNextPage = (e) => setPage(pre => (pre+1) < (totalPage - 1) ? pre + 1 : (totalPage -1))
+    const handleNextPage = (e) => setPage(pre => (pre + 1) < (totalPage - 1) ? pre + 1 : (totalPage - 1))
     const handlePrePage = (e) => setPage(pre => pre > 0 ? pre - 1 : 0)
 
     return (
-        <div>
+        <div id='shopmain'>
             <div className='grid grid-cols-[30%_70%]'>
                 <div className='pt-[43px] ml-[145px]'>
                     <div className='mb-5'>
@@ -192,4 +196,4 @@ export default function ShopMain({ searchValue }) {
             </div>
         </div>
     )
-    }
+}
