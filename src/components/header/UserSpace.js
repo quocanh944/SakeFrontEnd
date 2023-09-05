@@ -8,8 +8,8 @@ export default function UserSpace() {
     const handleLogout = () => {
         window.localStorage.removeItem('token')
         window.localStorage.removeItem('user')
-        toast.success('Log out Success!')
         window.location.reload()
+        toast.success('Log out Success!')
     }
     return (
         <div className='flex gap-[22px]'>
