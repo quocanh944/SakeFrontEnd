@@ -18,9 +18,13 @@ const Login = () => {
   }, []);
 
   const handleLogin = async (e) => {
+    const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     e.preventDefault();
     if (!email || !password) {
-      toast.error("Email/Password is required");
+      toast.warning("Email/Password is required !");
+    }
+    if (!email.match(mailformat)) {
+      toast.warning("Email is not valid !");
     }
     try {
       let res = await LoginApi(email, password);
