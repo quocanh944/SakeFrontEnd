@@ -11,6 +11,8 @@ import { RxDotsHorizontal } from "react-icons/rx";
 import { AiOutlinePlus } from "react-icons/ai";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
+import { ImFilm } from "react-icons/im";
+import { TbBrandTwilio } from "react-icons/tb";
 const icons = {
   AiOutlineHome,
   TiGift,
@@ -25,5 +27,7 @@ const icons = {
   AiOutlinePlus,
   IoIosArrowForward,
   IoIosArrowBack,
+  ImFilm,
+  TbBrandTwilio,
 };
 export default icons;

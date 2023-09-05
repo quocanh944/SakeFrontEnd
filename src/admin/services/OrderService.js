@@ -1,8 +1,7 @@
 import axios from "./AxiosCustom";
-
+const token = localStorage.getItem("token");
 const fetchAllOrders = (page) => {
-  const token = localStorage.getItem("token");
-  return axios.get(`api/orders/recent?page=${page}&size=6`, {
+  return axios.get(`api/orders/recent?page=${page}&size=10`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -10,3 +9,12 @@ const fetchAllOrders = (page) => {
 };
 
 export { fetchAllOrders };
+
+const getOrderById = (id) => {
+  return axios.get(`api/orders/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+export { getOrderById };

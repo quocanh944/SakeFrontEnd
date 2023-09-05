@@ -1,13 +1,11 @@
-import Avatar from "../components/Avatar";
-
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getUser } from "../services/UserService";
-import { ProductPusrchased } from "../components/List";
+import { OrderPusrchased } from "../components/List";
 
 const CustomerDetail = () => {
   const { id } = useParams();
-  const styles__font = "text-blue-500 font-semibold";
+  const styles__font = "text-orange-500 font-semibold";
   const [customer, setCustomer] = useState([]);
   const [order, setOrder] = useState([]);
   const [totalExpenses, setTotalExpenses] = useState();
@@ -29,7 +27,7 @@ const CustomerDetail = () => {
 
   return (
     <>
-      <section className="w-full shadow-lg h-[800px] bg-white rounded-lg p-4 ">
+      <section className="w-full shadow-lg h-full bg-white rounded-lg p-4 flex flex-col justify-between">
         <header className="font-bold text-xl mb-3">
           <div>Customer Detail</div>
         </header>
@@ -88,14 +86,21 @@ const CustomerDetail = () => {
         </div>
 
         <hr></hr>
-        <div className="flex justify-between h-[400px] mt-6">
+        <div className="w-full h-[400px] mt-6">
           {/* <ListOrder />
           <Cart /> */}
-          <div className="flex-1 ">
-            <ProductPusrchased id={id} order={order} />
+          <div>
+            <OrderPusrchased id={id} order={order} />
           </div>
-          <div className="flex-1 ml-4">Cart </div>
         </div>
+        <footer className="w-full h-[50px] flex items-center">
+          <Link
+            to={`/customer/`}
+            className="bg-orange-300 text-center hover:bg-orange-700 hover:text-orange-200 text-orange-500 font-bold py-1 px-4 rounded-lg w-[100px] cursor-pointer"
+          >
+            Back
+          </Link>
+        </footer>
       </section>
     </>
   );

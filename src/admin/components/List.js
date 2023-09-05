@@ -12,10 +12,9 @@ import Pagination from "./Pagination";
 import { deleteFilm, fetchAllFilms } from "../services/FilmService";
 import { deleteBrand, fetchAllBrands } from "../services/BrandService";
 import { fetchAllOrders } from "../services/OrderService";
-import EditProduct from "../form/EditProduct";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { fetchAllUsers, getUser } from "../services/UserService";
+import { fetchAllUsers } from "../services/UserService";
 import {
   ModalAddBrand,
   ModalAddFilm,
@@ -450,18 +449,20 @@ export const OrderList = () => {
     setCurrentPage(currentPage - 1);
   };
   return (
-    <div className="w-full bg-white shadow-lg h-[756px] flex flex-col rounded-2xl p-8 gap-4">
+    <div className="w-full bg-white shadow-lg h-auto flex flex-col rounded-2xl p-8 gap-4">
       <div className="font-medium flex items-center text-xl">Order List</div>
       <table className="w-full h-full">
         <thead>
-          <tr className="bg-stone-100 text-gray-400 text-left h-[64px] font-semibold ">
-            <td className=" h-[64px] p-[25px] text-center">Name</td>
-            <td className=" h-[64px] p-[25px] text-center">Address</td>
-            <td className=" h-[64px] p-[25px] text-center">Quantity</td>
-            <td className=" h-[64px] p-[25px] text-center">Price</td>
-            <td className=" h-[64px] p-[25px] text-center">Date Created</td>
-            <td className=" h-[64px] p-[25px] text-center">Status</td>
-            <td className=" h-[64px] p-[25px] text-center">Action</td>
+          <tr className="bg-stone-100 text-gray-400 text-left  font-semibold ">
+            <td className="  p-[25px] text-center">ID</td>
+            <td className="  p-[25px] text-center">Name</td>
+
+            <td className="  p-[25px] text-center">Address</td>
+            <td className="  p-[25px] text-center">Quantity</td>
+            <td className="  p-[25px] text-center">Price</td>
+            <td className="  p-[25px] text-center">Date Created</td>
+            <td className="  p-[25px] text-center">Status</td>
+            <td className="  p-[25px] text-center">Action</td>
           </tr>
         </thead>
         <tbody>
@@ -473,6 +474,7 @@ export const OrderList = () => {
                   className=" h-[64px] border-b-[1px] border-b-slate-200"
                   key={`order-${index}`}
                 >
+                  <td className="w-auto text-center">{item.id}</td>
                   <td className="w-auto text-center">{item.name}</td>
                   <td className="w-auto ">{item.address}</td>
                   <td className="w-auto text-center">
@@ -480,7 +482,7 @@ export const OrderList = () => {
                   </td>
                   <td className="w-auto text-center">{item.total}</td>
                   <td className="w-auto text-center">{item.created_date}</td>
-                  <td className="w-auto text-center">{""}</td>
+                  <td className="w-auto text-center"></td>
                   <td className="w-auto text-center ">
                     <Link to={`/order/${item.id}`} className="text-blue-600">
                       <CiEdit
@@ -575,11 +577,15 @@ export const CustomerList = () => {
                     {item.created_date || "Updating... "}
                   </td>
                   <td className="w-auto text-center ">
-                    <Link to={`/customer/${item.id}`} className="text-blue-600">
-                      <CiEdit
+                    <Link
+                      to={`/customer/${item.id}`}
+                      className="bg-orange-300 hover:bg-orange-700 hover:text-orange-200 text-orange-500  font-bold py-1 px-4 rounded-lg"
+                    >
+                      {/* <CiEdit
                         className="inline-block mr-3 cursor-pointer"
                         size={20}
-                      />
+                      /> */}
+                      Detail
                     </Link>
                   </td>
                 </tr>
@@ -598,25 +604,26 @@ export const CustomerList = () => {
   );
 };
 
-export const ProductPusrchased = (props) => {
+export const OrderPusrchased = (props) => {
   const [listProduct, setListProduct] = useState(props.order);
   useEffect(() => {
     setListProduct(props.order);
   }, [props.order]);
   return (
-    <div className="w-full bg-white shadow-lg h-full flex flex-col rounded-2xl p-8 gap-4 ">
+    <div className="w-full bg-orange-100 shadow-lg h-full flex flex-col rounded-2xl p-8 gap-4 ">
       <div className="font-medium flex items-center text-xl">List Order</div>
       <div className="max-h-[300px] overflow-y-auto block">
-        <table className="w-full h-[300px]">
+        <table className="w-full max-h-[300px]">
           <thead className="sticky top-0">
-            <tr className="bg-stone-100 text-gray-400 text-left font-semibold ">
+            <tr className="bg-white text-gray-500 text-left font-semibold ">
               <td className="  p-[5px] text-center">ID</td>
               <td className="  p-[5px] text-center">Quantity</td>
               <td className="  p-[5px] text-center">Price</td>
               <td className="  p-[5px] text-center">Order date</td>
+              <td className="  p-[5px] text-center">Action</td>
             </tr>
           </thead>
-          <tbody className="h-[300px]">
+          <tbody className="max-h-[300px] font-semibold">
             {listProduct &&
               listProduct.length > 0 &&
               listProduct.map((item, index) => {
@@ -625,53 +632,81 @@ export const ProductPusrchased = (props) => {
                 // console.log("Name product: ", item.product.name);
                 return (
                   <tr
-                    className="  border-b-[1px] border-b-slate-200"
+                    className=" h-[50px] border-b-[1px] border-b-orange-300"
                     key={`order-${index}`}
                   >
-                    <td className="w-auto text-center">
-                      <Link to={`/order/${item.id}`}>{item.id}</Link>
-                    </td>
+                    <td className="w-auto text-center">{item.id}</td>
                     <td className="w-auto text-center">
                       {item.orderDetailList.length}
                     </td>
                     <td className="w-auto text-center">{item.total}</td>
                     <td className="w-auto text-center">{item.created_date}</td>
+                    <td className="w-auto text-center">
+                      <Link
+                        to={`/order/${item.id}`}
+                        className="bg-orange-300 hover:bg-orange-700 hover:text-orange-200 text-orange-500  font-bold py-1 px-4 rounded-lg"
+                      >
+                        Detail
+                      </Link>
+                    </td>
                   </tr>
                 );
               })}
           </tbody>
         </table>
       </div>
-
-      {/* {listOrder &&
-            listOrder.length > 0 &&
-            listOrder.map((item, index) => {
-              return (
-                <tr
-                  className=" h-[64px] border-b-[1px] border-b-slate-200"
-                  key={`order-${index}`}
-                >
-                  <td className="w-auto text-center">{item.name}</td>
-                  <td className="w-auto ">{item.address}</td>
-                  <td className="w-auto text-center">
-                    {item.orderDetailList.length}
-                  </td>
-                  <td className="w-auto text-center">{item.total}</td>
-                  <td className="w-auto text-center">{item.created_date}</td>
-                  <td className="w-auto text-center">{""}</td>
-                  <td className="w-auto text-center ">
-                    <Link to={`/order/${item.id}`} className="text-blue-600">
-                      <CiEdit
-                        className="inline-block mr-3 cursor-pointer"
-                        size={20}
-                      />
-                    </Link>
-                  </td>
-                </tr>
-              );
-            })} */}
     </div>
   );
 };
 
-export const CartList = () => {};
+export const ProductsOfOrder = (props) => {
+  const { products } = props;
+  const style = "w-auto text-center";
+  const [listProduct, setListProduct] = useState(products);
+  useEffect(() => {
+    setListProduct(products);
+  }, [products]);
+  listProduct.map((item, index) => {
+    console.log(item);
+  });
+  return (
+    <div className="col-span-2 h-full">
+      <div className={props.styles}>Products</div>
+      <div className="w-full max-h-[400px] overflow-y-auto block bg-gray-100 shadow-lg p-4 font-semibold">
+        <table className="w-full">
+          <thead className="sticky top-0">
+            <tr className="bg-stone-100 text-gray-400 text-left font-semibold ">
+              <td className="p-[15px] text-center">Image</td>
+              <td className="p-[15px] text-center">Name</td>
+              <td className="p-[15px] text-center">Quantity</td>
+              <td className="p-[15px] text-center">Price</td>
+            </tr>
+          </thead>
+          <tbody className="max-h-[400px] ">
+            {listProduct &&
+              listProduct.length > 0 &&
+              listProduct.map((item, index) => {
+                return (
+                  <tr
+                    className="  border-b-[2px] border-b-slate-200"
+                    key={`brand-${index}`}
+                  >
+                    <td className={style}>
+                      <img
+                        src={item.product.image}
+                        alt=""
+                        className="object-contain h-[90px] w-full"
+                      ></img>
+                    </td>
+                    <td className={style}>{item.product.name}</td>
+                    <td className={style}>{item.quantity}</td>
+                    <td className={style}>{item.total}</td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};

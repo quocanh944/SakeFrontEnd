@@ -10,6 +10,8 @@ const {
   LuShoppingBag,
   TiGift,
   BiLogOut,
+  ImFilm,
+  TbBrandTwilio,
 } = icons;
 export const sidebarNavItems = [
   {
@@ -31,16 +33,22 @@ export const sidebarNavItems = [
     section: "product",
   },
   {
+    display: "Film",
+    icon: <ImFilm size={30} />,
+    to: "/films",
+    section: "customer",
+  },
+  {
+    display: "Brand",
+    icon: <TbBrandTwilio size={30} />,
+    to: "/brands",
+    section: "customer",
+  },
+  {
     display: "Customer",
     icon: <BiUser size={30} />,
     to: "/customer",
     section: "customer",
-  },
-  {
-    display: "Create New Campaign",
-    icon: <TiGift size={30} />,
-    to: "/create-new-campaign",
-    section: "Create New Campaign",
   },
 ];
 const activeStyle =
