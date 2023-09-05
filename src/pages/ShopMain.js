@@ -80,6 +80,26 @@ export default function ShopMain({ searchValue }) {
         }
 
     }, [sort, brandFilter, filmFilter, page])
+    useEffect(() => {
+        const handleSearchAPI = async () => {
+            let res = await axios.get('http://localhost:8080/api/products/search', {
+                params: {
+                    name: searchValue,
+                    page: page,
+                    size: 6,
+                    direction: 'ASC'
+                }
+            })
+            setProducts(res.data.content)
+            setNumProduct(res.data.totalElements)
+            setTotalPage(res.data.totalPages)
+
+        }
+        if (searchValue){
+            setPage(0)
+            handleSearchAPI()
+        }
+    }, [searchValue, page])
 
     const getQueryString = () => {
         const params = new URLSearchParams()
@@ -111,6 +131,8 @@ export default function ShopMain({ searchValue }) {
                         <button type='reset' className='inline-block text-[#C4C4C4] text-[14px] leading-5 tracking-[-0.4px] underline' onClick={() => {
                             setBrandFilter([])
                             setFilmFilter([])
+                            document.querySelector('.search').value = ''
+                            setPage(0)
                             document.querySelectorAll('.brand').forEach(item => item.checked = false)
                             document.querySelectorAll('.film').forEach(item => item.checked = false)
                         }}>Clear filters</button>
