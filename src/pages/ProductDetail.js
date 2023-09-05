@@ -4,6 +4,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
+
 export default function ProductDetail({ id, setCart }) {
     const [product, setProduct] = useState({})
     const [quantity, setQuantity] = useState(0)

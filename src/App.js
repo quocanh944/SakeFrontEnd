@@ -43,7 +43,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Body1 />} />
           <Route path='/login' element={<Login />} />
-          <Route path='/cart' element={<Cart />} />
+          <Route path='/cart' element={<Cart setCartLength={setCart}  />} />
           <Route path='/checkout' element={<Checkout />} />
           <Route path='/review' element={<Review />} />
           <Route path='/shop' element={<ShopMain searchValue={search} />} />

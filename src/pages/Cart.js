@@ -4,9 +4,10 @@ import CouponTotalPrice from '../components/comon/CouponTotalPrice'
 import RedirectRoute from '../components/comon/RedirectRoute'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+
 // import RedirectRoute from './RedirectRoute'
 
-export default function Cart() {
+export default function Cart({setCartLength}) {
     const [cart, setCart] = useState([])
     const [total, setTotal] = useState(0)
     const [itemRemove, setItemRemove] = useState([])
@@ -36,8 +37,8 @@ export default function Cart() {
             }
         })
         if(resDel.data) {
+            setCartLength(cart.length - 1 > 0 ? cart.length - 1 : 0)
             setItemRemove((pre)=> [...pre, 1])
-            window.location.reload()
         }
     }
 
