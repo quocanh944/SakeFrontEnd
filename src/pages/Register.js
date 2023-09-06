@@ -1,16 +1,19 @@
 import axios from 'axios'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 export default function Register() {
-    const [fname, setFname] = useState('')
-    const [lname, setLname] = useState('')
+    // const [fname, setFname] = useState('')
+    // const [lname, setLname] = useState('')
+    const fnameRef = useRef(null)
+    const lnameRef = useRef(null)
+    var fullName = ''
     const navigate = useNavigate()
 
     const [userData, setUserData] = useState({
         'email': '',
-        'fullName': fname + ' ' + lname,
+        'fullName': '',
         'password': '',
         'confirmPassword': ''
     })
@@ -24,7 +27,12 @@ export default function Register() {
         } catch (error) {
             toast.error(error.response.data.message)
         }
-
+    }
+    const handleFullName = (fnameValue, lnameValue) => {
+        fullName = fnameValue + ' ' + lnameValue
+        setUserData((preUserData) => {
+            return {...preUserData, fullName}
+        })
     }
 
     return (
@@ -45,14 +53,16 @@ export default function Register() {
                                     name='firstname'
                                     className='w-full h-10 px-4 border-[#A9ABBD] border'
                                     placeholder='First Name'
-                                    onChange={(e) => setFname(e.target.value)}
+                                    ref={fnameRef}
+                                    onChange={() => handleFullName(fnameRef.current.value,lnameRef.current.value ===  null ? '' : lnameRef.current.value ===  null)}
                                 />
                                 <input
                                     type="text"
                                     name='lastname'
                                     className='w-full h-10 px-4 border-[#A9ABBD] border'
                                     placeholder='Last Name'
-                                    onChange={(e) => setLname(e.target.value)}
+                                    ref={lnameRef}
+                                    onChange={() => handleFullName(fnameRef.current.value === null ? '' : fnameRef.current.value,lnameRef.current.value)}
                                 />
                             </div>
                             <input
